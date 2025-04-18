@@ -23,8 +23,10 @@
 #include "usart.h"
 #include "gpio.h"
 #include "stdio.h"
+#include "lcd_init.h"
+#include "pic.h"
 #include "lcd.h"
-#include "font.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -165,6 +167,11 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+	  const uint8_t hello[] = "hello";
+
+	      // 调用 LCD_ShowString 输出字符串 "hello"
+
+	  LCD_ShowString(0, 0, hello, 0x0000, 0xFFFF, 16, 0);
   }
   /* USER CODE END Error_Handler_Debug */
 }
