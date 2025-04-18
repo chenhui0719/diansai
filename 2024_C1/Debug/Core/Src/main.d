@@ -26,8 +26,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  D:/ST/Repository/STM32Cube_FW_F1_V1.8.6/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  D:/ST/Repository/STM32Cube_FW_F1_V1.8.6/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/tim.h \
- ../Core/Inc/usart.h ../Core/Inc/gpio.h ../Core/Inc/lcd.h \
- ../Core/Inc/System.h ../Core/Inc/font.h
+ ../Core/Inc/usart.h ../Core/Inc/gpio.h ../Core/Inc/lcd_init.h \
+ ../Core/Inc/sys.h ../Core/Inc/pic.h ../Core/Inc/lcd.h
 ../Core/Inc/main.h:
 D:/ST/Repository/STM32Cube_FW_F1_V1.8.6/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -60,6 +60,7 @@ D:/ST/Repository/STM32Cube_FW_F1_V1.8.6/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1
 ../Core/Inc/tim.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/gpio.h:
+../Core/Inc/lcd_init.h:
+../Core/Inc/sys.h:
+../Core/Inc/pic.h:
 ../Core/Inc/lcd.h:
-../Core/Inc/System.h:
-../Core/Inc/font.h:
