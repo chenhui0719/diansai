@@ -14,32 +14,31 @@ void generateWave(int freq)
     for (int i = 0; i < 100000; ++i)
     {
         int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period; // 计算当前采样点对应的pwm索引
-        wave[i] += pwm[pwmIndex];                                                  // 叠加到wave数组中
+        wave[i] = pwm[pwmIndex];                                                   // 直接赋值到wave数组中
     }
 }
 
 int main()
 {
-    int freq;
-    std::cout << "Enter the frequency (Hz): ";
-    std::cin >> freq;
-
-    generateWave(freq); // 生成指定频率的方波
-
-    // 将wave数组保存到文件
-    std::ofstream file("wave_data.txt");
-    if (file.is_open())
+    for (int freq = 10; freq <= 1000; freq *= 2) // 扫描频率从10Hz到1000Hz，每次翻倍
     {
-        for (int i = 0; i < 100000; ++i)
+        generateWave(freq); // 生成指定频率的方波
+
+        // 将wave数组保存到文件
+        std::ofstream file("wave_data_" + std::to_string(freq) + ".txt");
+        if (file.is_open())
         {
-            file << wave[i] << "\n";
+            for (int i = 0; i < 100000; ++i)
+            {
+                file << wave[i] << "\n";
+            }
+            file.close();
         }
-        file.close();
-    }
-    else
-    {
-        std::cerr << "Unable to open file" << std::endl;
-        return -1;
+        else
+        {
+            std::cerr << "Unable to open file for frequency " << freq << "Hz" << std::endl;
+            return -1;
+        }
     }
 
     return 0;
