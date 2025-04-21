@@ -8,9 +8,6 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
-const uint32_t pwm[50] = {1, 2, 5, 8, 11, 16, 21, 26, 32, 38, 44, 50, 56, 62,
-                          68, 74, 79, 84, 89, 92, 95, 98, 99, 100, 100, 99, 98, 95, 92, 89, 84,
-                          79, 74, 68, 62, 56, 50, 44, 38, 32, 26, 21, 16, 11, 8, 5, 2, 1, 0, 0};
 uint8_t Sign_samplingOver = 0;
 uint8_t Sign_wave_exist = 0;
 uint16_t adc_cache[adc_cache_size];
@@ -23,24 +20,50 @@ float FFT_OUTPUT[adc_cache_size];
 float FFT_OUTPUT_MAX = 0;
 uint32_t FFT_OUTPUT_MAX_index = 0;
 
-const uint16_t sampleRate = 1000; // 假设采样率为10kHz
-uint16_t spwm[1000] = {0};
+// const uint32_t pwm[50] = {1, 2, 5, 8, 11, 16, 21, 26, 32, 38, 44, 50, 56, 62,
+//                           68, 74, 79, 84, 89, 92, 95, 98, 99, 100, 100, 99, 98, 95, 92, 89, 84,
+//                           79, 74, 68, 62, 56, 50, 44, 38, 32, 26, 21, 16, 11, 8, 5, 2, 1, 0, 0};
+// const uint16_t sampleRate = 50000; // 假设采样率为10kHz
+// uint16_t spwm[50000] = {0};
+// void generateWave(uint16_t freq)
+// {
+//     const uint16_t period = sampleRate / freq;
+//     if (period == 0)
+//         Error_Handler(); // 防止除零错误
+//     uint16_t i;
+//     for (i = 0; i < sampleRate; ++i)
+//     {
+//         uint16_t pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period;
+//         spwm[i] = pwm[pwmIndex] * 4095 / 100;
+//     }
+//     // 算一个周期的采样点数
+// }
+uint32_t pwm[1000];
+const uint16_t sampleRate = 50000; // 假设采样率为10kHz
+uint16_t spwm[50000] = {0};
+
+void generatePWMArray(uint32_t *pwm, uint16_t size)
+{
+    for (uint16_t i = 0; i < size; ++i)
+    {
+        pwm[i] = (uint32_t)(50 + 45 * sin(2 * M_PI * i / size)) * 100 / 100;
+    }
+}
 void generateWave(uint16_t freq)
 {
     const uint16_t period = sampleRate / freq;
+    uint16_t size = 1000;
     if (period == 0)
         Error_Handler(); // 防止除零错误
+    generatePWMArray(pwm, size);
     uint16_t i;
     for (i = 0; i < sampleRate; ++i)
     {
-        uint16_t pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period;
-        if (pwmIndex >= sizeof(pwm) / sizeof(pwm[0]))
-            Error_Handler(); // 防止越界
-        spwm[i] = pwm[pwmIndex] / 100 * 4096;
+        uint16_t pwmIndex = (i % period) * (size - 1) / period;
+        spwm[i] = pwm[pwmIndex] * 4095 / 100;
     }
     // 算一个周期的采样点数
 }
-
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -99,9 +122,8 @@ int main(void)
     Sign_samplingOver = 0;
 
     generateWave(200);
-    while (1)
-        HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, 1000,
-                          DAC_ALIGN_12B_R);
+    HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, 1000,
+                      DAC_ALIGN_12B_R);
 
     while (1)
     {
