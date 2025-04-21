@@ -8,10 +8,9 @@
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
-const uint8_t pwm[50] = {1, 2, 5, 8, 11, 16, 21, 26, 32, 38, 44, 50, 56, 62,
-                         68, 74, 79, 84, 89, 92, 95, 98, 99, 100, 100, 99, 98, 95, 92, 89, 84,
-                         79, 74, 68, 62, 56, 50, 44, 38, 32, 26, 21, 16, 11, 8, 5, 2, 1, 0, 0};
-uint16_t i, j, k;
+const uint32_t pwm[50] = {1, 2, 5, 8, 11, 16, 21, 26, 32, 38, 44, 50, 56, 62,
+                          68, 74, 79, 84, 89, 92, 95, 98, 99, 100, 100, 99, 98, 95, 92, 89, 84,
+                          79, 74, 68, 62, 56, 50, 44, 38, 32, 26, 21, 16, 11, 8, 5, 2, 1, 0, 0};
 uint8_t Sign_samplingOver = 0;
 uint8_t Sign_wave_exist = 0;
 uint16_t adc_cache[adc_cache_size];
@@ -24,17 +23,22 @@ float FFT_OUTPUT[adc_cache_size];
 float FFT_OUTPUT_MAX = 0;
 uint32_t FFT_OUTPUT_MAX_index = 0;
 
-uint16_t spwm[10000] = {0};
+const uint16_t sampleRate = 1000; // 假设采样率为10kHz
+uint16_t spwm[1000] = {0};
 void generateWave(uint16_t freq)
 {
-    const int sampleRate = 10000;         // 假设采样率为10kHz
-    const int period = sampleRate / freq; // 计算一个周期的采样点数
-
-    for (int i = 0; i < sampleRate; ++i)
+    const uint16_t period = sampleRate / freq;
+    if (period == 0)
+        Error_Handler(); // 防止除零错误
+    uint16_t i;
+    for (i = 0; i < sampleRate; ++i)
     {
-        int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period; // 计算当前采样点对应的pwm索引
-        spwm[i] = pwm[pwmIndex] / 100 * 4096;                                      // 直接赋值到wave数组中
+        uint16_t pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period;
+        if (pwmIndex >= sizeof(pwm) / sizeof(pwm[0]))
+            Error_Handler(); // 防止越界
+        spwm[i] = pwm[pwmIndex] / 100 * 4096;
     }
+    // 算一个周期的采样点数
 }
 
 void SystemClock_Config(void)
@@ -93,11 +97,11 @@ int main(void)
     HAL_TIM_Base_Start(&htim3);
     htim3.Instance->ARR = 84e6 / adc_fs - 1;
     Sign_samplingOver = 0;
+
+    generateWave(200);
     while (1)
-    {
-        generateWave(200);
-        HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, N_sampling__, DAC_ALIGN_12B_R);
-    }
+        HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, 1000,
+                          DAC_ALIGN_12B_R);
 
     while (1)
     {
@@ -105,6 +109,7 @@ int main(void)
         while (!Sign_samplingOver)
             ;
         i_trigger = adc_trigger_size;
+        uint8_t i;
         for (i = 0; i < adc_trigger_size; i++)
         {
             if (adc_cache[i] < 50 && adc_cache[i + 1] > 50)
