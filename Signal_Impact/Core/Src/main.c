@@ -33,7 +33,7 @@ void generateWave(uint16_t freq)
     for (int i = 0; i < sampleRate; ++i)
     {
         int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1) / period; // 计算当前采样点对应的pwm索引
-        spwm[i] = pwm[pwmIndex];                                                   // 直接赋值到wave数组中
+        spwm[i] = pwm[pwmIndex] / 100 * 4096;                                      // 直接赋值到wave数组中
     }
 }
 
@@ -95,13 +95,8 @@ int main(void)
     Sign_samplingOver = 0;
     while (1)
     {
-        HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, N_sampling__, DAC_ALIGN_12B_R);
-    }
-
-    while (1)
-    {
         generateWave(200);
-        HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+        HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)spwm, N_sampling__, DAC_ALIGN_12B_R);
     }
 
     while (1)

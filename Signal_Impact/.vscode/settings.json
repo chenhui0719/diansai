@@ -1,3 +1,6 @@
 {
-  "stm32-for-vscode.makePath": false
+  "stm32-for-vscode.makePath": false,
+  "files.associations": {
+    "*.bak": "c"
+  }
 }

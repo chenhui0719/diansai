@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    gpio.c
-  * @brief   This file provides code for the configuration
-  *          of all used GPIO pins.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    gpio.c
+ * @brief   This file provides code for the configuration
+ *          of all used GPIO pins.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -33,168 +33,200 @@
 /* USER CODE END 1 */
 
 /** Configure pins
-*/
+ */
 void MX_GPIO_Init(void)
 {
 
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    /* GPIO Ports Clock Enable */
-    __HAL_RCC_GPIOE_CLK_ENABLE();
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOF_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
-    __HAL_RCC_GPIOG_CLK_ENABLE();
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOE_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
 
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(LCD_BL_GPIO_Port, LCD_BL_Pin, GPIO_PIN_SET);
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LCD_BL_GPIO_Port, LCD_BL_Pin, GPIO_PIN_SET);
 
-    /*Configure GPIO pins : PEPin PEPin PEPin */
-    GPIO_InitStruct.Pin = KEY2_toggleRoom_Pin|KEY1_ToggleSelect_Pin|KEY0_stopDrawUpdate_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	/*Configure GPIO pins : PEPin PEPin PEPin */
+	GPIO_InitStruct.Pin = KEY2_toggleRoom_Pin | KEY1_ToggleSelect_Pin | KEY0_stopDrawUpdate_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-    /*Configure GPIO pin : PtPin */
-    GPIO_InitStruct.Pin = KEY_ToggleWaveTable_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-    HAL_GPIO_Init(KEY_ToggleWaveTable_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : PtPin */
+	GPIO_InitStruct.Pin = KEY_ToggleWaveTable_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	HAL_GPIO_Init(KEY_ToggleWaveTable_GPIO_Port, &GPIO_InitStruct);
 
-    /*Configure GPIO pin : PtPin */
-    GPIO_InitStruct.Pin = LCD_BL_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(LCD_BL_GPIO_Port, &GPIO_InitStruct);
+	/*Configure GPIO pin : PtPin */
+	GPIO_InitStruct.Pin = LCD_BL_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(LCD_BL_GPIO_Port, &GPIO_InitStruct);
 
-    /* EXTI interrupt init*/
-    HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	/* EXTI interrupt init*/
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
-    HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+	HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
-    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+	HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
-    HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-
+	HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 }
 
 /* USER CODE BEGIN 2 */
-extern wave wave_t;
-extern wave wave_f;
-extern uint8_t Sign_dacToggleWave;
-extern uint8_t Sign_stringUpdate;
-extern uint8_t Sign_stop;
-extern uint8_t Sign_function;
-extern uint8_t valueData_type;
-extern uint16_t wave_table_i;
-extern uint16_t wave_frequency;
-extern uint16_t zoomInMultiple;
-extern char show_string_wave_frequency[8];
+// extern wave wave_t;
+// extern wave wave_f;
+// extern uint8_t Sign_dacToggleWave;
+// extern uint8_t Sign_stringUpdate;
+// extern uint8_t Sign_stop;
+// extern uint8_t Sign_function;
+// extern uint8_t valueData_type;
+// extern uint16_t wave_table_i;
+// extern uint16_t wave_frequency;
+// extern uint16_t zoomInMultiple;
+// extern char show_string_wave_frequency[8];
 #include "tim.h"
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	switch(GPIO_Pin){
-		case KEY_ToggleWaveTable_Pin:
-			//½øÀ´ÏÈÊ§ÄÜÖÐ¶Ï·ÀÖ¹¶à´Î´¥·¢ÖÐ¶Ï
-			HAL_NVIC_DisableIRQ(KEY_ToggleWaveTable_EXTI_IRQn);
-			switch(Sign_function){
-			case 0:
-				//²¦¶¯²¨ÐÎÖ¸Õë£¬ÇÐ»»DAC¼´½«·¢ÉúµÄ²¨ÐÎ
-				if(wave_table_i < 3)wave_table_i++;
-				else wave_table_i = 0;
-				//ÇÐ»»DAC²¨ÐÎ±êÖ¾ÖÃÎ»£¬Áô´ýÖ÷³ÌÐò²éÑ¯Íê³ÉÏà¹Ø²Ù×÷
-				Sign_dacToggleWave = 1;
-				break;
-			case 1:
-				//¸Ä±ä²¨ÐÎÆµÂÊ
-				if(wave_frequency < 2000){
-					wave_frequency+=100;
-				}
-				else{wave_frequency = 100;}
-				htim2.Instance->ARR = 84e4/wave_frequency -1;
-				sprintf(show_string_wave_frequency, "%dHz", wave_frequency);
-				break;
-			case 2:
-				if(zoomInMultiple < 4)zoomInMultiple++;
-				else zoomInMultiple = 1;
-				break;
-			case 3:
-				//Toggle Sign_stop À´¿ØÖÆ³ÌÐòÆôÍ£
-				if(Sign_stop == 0)Sign_stop = 1;
-				else Sign_stop = 0;
-				break;
-			case 4:
-				//ÇÐ»»ÏÔÊ¾µÄÊý¾ÝÀàÐÍ£¨»ù²¨ÆµÂÊ¡¢·ùÖµ£©
-				if(valueData_type == 0)valueData_type = 1;
-				else valueData_type = 0;
-				break;
-			default:
-				break;
-			}
-			//´¦ÀíÍê¸ÃÖÐ¶Ï¶ÔÓ¦ÊÂ¼þºóÔÙ´Î¿ªÆô¸ÃÖÐ¶Ï
-			//³¢ÊÔÁËÑÓ³ÙÈí¼þÏû¶¶£¬Ð§¹ûºÜ²î£¬ÓÃ¶¨Ê±Æ÷ÓÖ¸Ð¾õ²»Èç¸ÉÁ½¸öµçÈÝÉÏÈ¥
-			//¹Ê²»ÔÙÔÚÖ÷³ÌÐòÖÐ¹ÜÀíÖÐ¶Ï»òÌí¼ÓÖÐ¶Ï¿ªÆôÇ°ÑÓ³Ù
-			HAL_NVIC_EnableIRQ(KEY_ToggleWaveTable_EXTI_IRQn);
-			break;
-		case KEY0_stopDrawUpdate_Pin:
-			HAL_NVIC_DisableIRQ(KEY0_stopDrawUpdate_EXTI_IRQn);
-			if(Sign_function == 0)Sign_function=4;
-			else Sign_function--;
-			HAL_NVIC_EnableIRQ(KEY0_stopDrawUpdate_EXTI_IRQn);
-			break;
-		case KEY1_ToggleSelect_Pin:
-			HAL_NVIC_DisableIRQ(KEY1_ToggleSelect_EXTI_IRQn);
-			switch(Sign_function){
-			case 0:
-				//²¦¶¯²¨ÐÎÖ¸Õë£¬ÇÐ»»DAC¼´½«·¢ÉúµÄ²¨ÐÎ
-				if(wave_table_i > 0)wave_table_i--;
-				else wave_table_i = 3;
-				//ÇÐ»»DAC²¨ÐÎ±êÖ¾ÖÃÎ»£¬Áô´ýÖ÷³ÌÐò²éÑ¯Íê³ÉÏà¹Ø²Ù×÷
-				Sign_dacToggleWave = 1;
-				break;
-			case 1:
-				//¸Ä±ä²¨ÐÎÆµÂÊ
-				if(wave_frequency > 100){
-					wave_frequency-=100;
-				}
-				else{wave_frequency = 2000;}
-				htim2.Instance->ARR = 84e4/wave_frequency -1;
-				sprintf(show_string_wave_frequency, "%dHz", wave_frequency);
-				break;
-			case 2:
-				if(zoomInMultiple > 1)zoomInMultiple--;
-				else zoomInMultiple = 4;
-				break;
-			case 3:
-				//Toggle Sign_stop À´¿ØÖÆ³ÌÐòÆôÍ£
-				if(Sign_stop == 0)Sign_stop = 1;
-				else Sign_stop = 0;
-				break;
-			case 4:
-				//ÇÐ»»ÏÔÊ¾µÄÊý¾ÝÀàÐÍ£¨»ù²¨ÆµÂÊ¡¢·ùÖµ£©
-				if(valueData_type == 0)valueData_type = 1;
-				else valueData_type = 0;
-				break;
-			default:
-				break;
-			}
-			HAL_NVIC_EnableIRQ(KEY1_ToggleSelect_EXTI_IRQn);
-			break;
-		case KEY2_toggleRoom_Pin:
-			HAL_NVIC_DisableIRQ(KEY2_toggleRoom_EXTI_IRQn);
-			if(Sign_function == 4)Sign_function = 0;
-			else Sign_function++;
-			HAL_NVIC_EnableIRQ(KEY2_toggleRoom_EXTI_IRQn);
-			break;
-		default:break;
-	}
-	//ÖÃ±êÖ¾Î»£¬ÎÄ±¾ÐèÒª¸üÐÂ
-	Sign_stringUpdate = 1;
-}
+// void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+// {
+// 	switch (GPIO_Pin)
+// 	{
+// 	case KEY_ToggleWaveTable_Pin:
+// 		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½Ð¶Ï·ï¿½Ö¹ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+// 		HAL_NVIC_DisableIRQ(KEY_ToggleWaveTable_EXTI_IRQn);
+// 		switch (Sign_function)
+// 		{
+// 		case 0:
+// 			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬ï¿½Ð»ï¿½DACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+// 			if (wave_table_i < 3)
+// 				wave_table_i++;
+// 			else
+// 				wave_table_i = 0;
+// 			// ï¿½Ð»ï¿½DACï¿½ï¿½ï¿½Î±ï¿½Ö¾ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
+// 			Sign_dacToggleWave = 1;
+// 			break;
+// 		case 1:
+// 			// ï¿½Ä±ä²¨ï¿½ï¿½Æµï¿½ï¿½
+// 			if (wave_frequency < 2000)
+// 			{
+// 				wave_frequency += 100;
+// 			}
+// 			else
+// 			{
+// 				wave_frequency = 100;
+// 			}
+// 			htim2.Instance->ARR = 84e4 / wave_frequency - 1;
+// 			sprintf(show_string_wave_frequency, "%dHz", wave_frequency);
+// 			break;
+// 		case 2:
+// 			if (zoomInMultiple < 4)
+// 				zoomInMultiple++;
+// 			else
+// 				zoomInMultiple = 1;
+// 			break;
+// 		case 3:
+// 			// Toggle Sign_stop ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½Í£
+// 			if (Sign_stop == 0)
+// 				Sign_stop = 1;
+// 			else
+// 				Sign_stop = 0;
+// 			break;
+// 		case 4:
+// 			// ï¿½Ð»ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ê¡ï¿½ï¿½ï¿½Öµï¿½ï¿½
+// 			if (valueData_type == 0)
+// 				valueData_type = 1;
+// 			else
+// 				valueData_type = 0;
+// 			break;
+// 		default:
+// 			break;
+// 		}
+// 		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï¶ï¿½Ó¦ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ù´Î¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+// 		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½Ü²î£¬ï¿½Ã¶ï¿½Ê±ï¿½ï¿½ï¿½Ö¸Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥
+// 		// ï¿½Ê²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï¿ï¿½ï¿½ï¿½Ç°ï¿½Ó³ï¿½
+// 		HAL_NVIC_EnableIRQ(KEY_ToggleWaveTable_EXTI_IRQn);
+// 		break;
+// 	case KEY0_stopDrawUpdate_Pin:
+// 		HAL_NVIC_DisableIRQ(KEY0_stopDrawUpdate_EXTI_IRQn);
+// 		if (Sign_function == 0)
+// 			Sign_function = 4;
+// 		else
+// 			Sign_function--;
+// 		HAL_NVIC_EnableIRQ(KEY0_stopDrawUpdate_EXTI_IRQn);
+// 		break;
+// 	case KEY1_ToggleSelect_Pin:
+// 		HAL_NVIC_DisableIRQ(KEY1_ToggleSelect_EXTI_IRQn);
+// 		switch (Sign_function)
+// 		{
+// 		case 0:
+// 			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬ï¿½Ð»ï¿½DACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+// 			if (wave_table_i > 0)
+// 				wave_table_i--;
+// 			else
+// 				wave_table_i = 3;
+// 			// ï¿½Ð»ï¿½DACï¿½ï¿½ï¿½Î±ï¿½Ö¾ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
+// 			Sign_dacToggleWave = 1;
+// 			break;
+// 		case 1:
+// 			// ï¿½Ä±ä²¨ï¿½ï¿½Æµï¿½ï¿½
+// 			if (wave_frequency > 100)
+// 			{
+// 				wave_frequency -= 100;
+// 			}
+// 			else
+// 			{
+// 				wave_frequency = 2000;
+// 			}
+// 			htim2.Instance->ARR = 84e4 / wave_frequency - 1;
+// 			sprintf(show_string_wave_frequency, "%dHz", wave_frequency);
+// 			break;
+// 		case 2:
+// 			if (zoomInMultiple > 1)
+// 				zoomInMultiple--;
+// 			else
+// 				zoomInMultiple = 4;
+// 			break;
+// 		case 3:
+// 			// Toggle Sign_stop ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½Í£
+// 			if (Sign_stop == 0)
+// 				Sign_stop = 1;
+// 			else
+// 				Sign_stop = 0;
+// 			break;
+// 		case 4:
+// 			// ï¿½Ð»ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ê¡ï¿½ï¿½ï¿½Öµï¿½ï¿½
+// 			if (valueData_type == 0)
+// 				valueData_type = 1;
+// 			else
+// 				valueData_type = 0;
+// 			break;
+// 		default:
+// 			break;
+// 		}
+// 		HAL_NVIC_EnableIRQ(KEY1_ToggleSelect_EXTI_IRQn);
+// 		break;
+// 	case KEY2_toggleRoom_Pin:
+// 		HAL_NVIC_DisableIRQ(KEY2_toggleRoom_EXTI_IRQn);
+// 		if (Sign_function == 4)
+// 			Sign_function = 0;
+// 		else
+// 			Sign_function++;
+// 		HAL_NVIC_EnableIRQ(KEY2_toggleRoom_EXTI_IRQn);
+// 		break;
+// 	default:
+// 		break;
+// 	}
+// 	// ï¿½Ã±ï¿½Ö¾Î»ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+// 	Sign_stringUpdate = 1;
+// }
 
 /* USER CODE END 2 */
