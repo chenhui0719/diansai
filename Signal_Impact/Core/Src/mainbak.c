@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -63,391 +63,399 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//±êÖ¾Î»
-//£¨²¨ÐÎ»æÖÆ×¼±¸&±¾ÂÖADC-DMAÍê³É£©±êÖ¾Î»£¬ÅäºÏÍê³É²¨ÐÎ²ÉÑù¼°ÏÔÊ¾¹¤×÷
+// ï¿½ï¿½Ö¾Î»
+// ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½×¼ï¿½ï¿½&ï¿½ï¿½ï¿½ï¿½ADC-DMAï¿½ï¿½É£ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É²ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 uint8_t Sign_readyDisplay = 0;
 uint8_t Sign_samplingOver = 0;
-//DAC·¢Éú²¨ÐÎÇÐ»»±êÖ¾Î»
+// DACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½Ö¾Î»
 uint8_t Sign_dacToggleWave = 0;
-//²¨ÐÎÏÔÊ¾Ëõ·Å±êÖ¾Î»
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Å±ï¿½Ö¾Î»
 uint8_t Sign_waveZoomIn = 0;
 uint8_t Sign_waveZoomOut = 0;
-//ÎÄ±¾Ë¢ÐÂ±êÖ¾Î»£¬Ä¬ÈÏÎª1£¬¼´µÚÒ»´Î»æÍ¼Ë¢ÐÂÒ»´ÎÎÄ±¾£¬½«ÎÄ±¾ÏÔÊ¾³öÀ´
+// ï¿½Ä±ï¿½Ë¢ï¿½Â±ï¿½Ö¾Î»ï¿½ï¿½Ä¬ï¿½ï¿½Îª1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î»ï¿½Í¼Ë¢ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
 uint8_t Sign_stringUpdate = 1;
-//³ÌÐòÔËÐÐ±êÖ¾Î»£¬Ä¬ÈÏÎª0£¬Îª1Ôò³ÌÐòÔÝÍ£ÔËÐÐ£¬·½±ã¹Û²ì²¨ÐÎ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Ö¾Î»ï¿½ï¿½Ä¬ï¿½ï¿½Îª0ï¿½ï¿½Îª1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Û²ì²¨ï¿½ï¿½
 uint8_t Sign_stop = 0;
-//²¨ÐÎ´æÔÚ±êÖ¾Î»,0²»´æÔÚ,1´æÔÚ
+// ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ú±ï¿½Ö¾Î»,0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,1ï¿½ï¿½ï¿½ï¿½
 uint8_t Sign_wave_exist = 0;
-//³ÌÐòµ±Ç°¹¦ÄÜ{0:²¨ÐÎ,1:µ÷Æµ,2:Ëõ·Å,3:ÔÝÍ£}
+// ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½{0:ï¿½ï¿½ï¿½ï¿½,1:ï¿½ï¿½Æµ,2:ï¿½ï¿½ï¿½ï¿½,3:ï¿½ï¿½Í£}
 uint8_t Sign_function = 0;
-//³ÌÐòµ±Ç°Êý¾ÝÀàÐÍ{0:»ù²¨ÆµÂÊ,1:ÐÅºÅ·ùÖµ}
+// ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{0:ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½,1:ï¿½ÅºÅ·ï¿½Öµ}
 uint8_t valueData_type = 0;
 
-
-
-
-//µ±Ç°·¢Éú²¨ÆµÂÊ
+// ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
 uint16_t wave_frequency = 1000;
 
-//²ÉÑù²¨»ùÆµ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµ
 uint16_t base_frequency = 1000;
-//²ÉÑù²¨×îÖµ¼°ÆäÔÚ²ÉÑùµãÖÐµÄ¶ÔÓ¦Î»ÖÃ{×î´óÖµ,×îÐ¡Öµ},{×î´óÖµÎ»ÖÃ,×îÐ¡ÖµÎ»ÖÃ}
-float wave_maximum[2] = {3.30,0.00};
-uint32_t wave_maximum_index[2] = {0,0};
-//Çó½â×îÖµ×¨ÓÃ»º´æ£¬Çó½â·¶Î§Îª»æÍ¼ÇøÓò
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ¶ï¿½Ó¦Î»ï¿½ï¿½{ï¿½ï¿½ï¿½Öµ,ï¿½ï¿½Ð¡Öµ},{ï¿½ï¿½ï¿½ÖµÎ»ï¿½ï¿½,ï¿½ï¿½Ð¡ÖµÎ»ï¿½ï¿½}
+float wave_maximum[2] = {3.30, 0.00};
+uint32_t wave_maximum_index[2] = {0, 0};
+// ï¿½ï¿½ï¿½ï¿½ï¿½Öµ×¨ï¿½Ã»ï¿½ï¿½æ£¬ï¿½ï¿½â·¶Î§Îªï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
 float wave_maximum_Cache[plot_size] = {0};
 
-
-//Á½¸ö²¨£¬Ò»¸öÊ±Óò¡¢Ò»¸öÆµÓò
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½Ò»ï¿½ï¿½Æµï¿½ï¿½
 wave wave_t = {'t', 1, 1, {0}};
 wave wave_f = {'f', 2, 1, {0}};
 
-
-//DAC²¨ÐÎÑ¡ÔñÖ¸Õë£¬ÓÃÀ´µ÷ÕûDACµ±Ç°Éú³ÉµÄ²¨ÐÎ£¬Ä¬ÈÏÎªÕýÏÒ²¨
-uint16_t* wave_table[4] = {sin_table, square_table, triangle_table, sawtooth_table};
+// DACï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ö¸ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DACï¿½ï¿½Ç°ï¿½ï¿½ï¿½ÉµÄ²ï¿½ï¿½Î£ï¿½Ä¬ï¿½ï¿½Îªï¿½ï¿½ï¿½Ò²ï¿½
+uint16_t *wave_table[4] = {sin_table, square_table, triangle_table, sawtooth_table};
 uint16_t wave_table_i = 0;
 
-//ADC²ÉÑù½á¹û»º´æ
+// ADCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t adc_cache[adc_cache_size];
 
-//ADC²ÉÑùÆµÂÊ
-//uint32_t adc_fs = 40e3;
+// ADCï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
+// uint32_t adc_fs = 40e3;
 uint32_t adc_fs = 51.2e3;
 
-
-//lcdÏÔÊ¾µÄ×Ö·ûÐÅÏ¢
-//ADC²ÉÑùÆµÂÊÐÅÏ¢¡¢µ±Ç°Ñ¡ÖÐµÄ²¨ÐÎ¡¢·Å´ó±¶Êý
-char* show_string_fs = {"fs:51.2kHz"};
-//char* show_string_choice[2] = {"choice:t","choice:f"};
-//char* show_string_zoomIn[4] = {"±¶Êý:1","±¶Êý:2","±¶Êý:3","±¶Êý:4"};
-//char* show_string_waveType[4] = {"ÕýÏÒ","·½²¨","Èý½Ç","¾â³Ý"};
-//char* show_string_function[4] = {"²¨ÐÎ","µ÷Æµ","Ëõ·Å","ÔÝÍ£"};
-char* show_string_zoomIn[4] = {"Z1","Z2","Z3","Z4"};
-char* show_string_waveType[4] = {"sine","square","triangle","sawtooth"};
-char* show_string_function[5] = {"wave","genFre","zoom","section","measure"};
-char* show_string_stopORrun[2] = {"dynamic","static"};
-char* show_string_measureType[2] = {"baseFre","voltage"};
-//µ±Ç°²¨ÐÎÆµÂÊ
+// lcdï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ï¢
+// ADCï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½Ç°Ñ¡ï¿½ÐµÄ²ï¿½ï¿½Î¡ï¿½ï¿½Å´ï¿½ï¿½ï¿½
+char *show_string_fs = {"fs:51.2kHz"};
+// char* show_string_choice[2] = {"choice:t","choice:f"};
+// char* show_string_zoomIn[4] = {"ï¿½ï¿½ï¿½ï¿½:1","ï¿½ï¿½ï¿½ï¿½:2","ï¿½ï¿½ï¿½ï¿½:3","ï¿½ï¿½ï¿½ï¿½:4"};
+// char* show_string_waveType[4] = {"ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½"};
+// char* show_string_function[4] = {"ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½Æµ","ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½Í£"};
+char *show_string_zoomIn[4] = {"Z1", "Z2", "Z3", "Z4"};
+char *show_string_waveType[4] = {"sine", "square", "triangle", "sawtooth"};
+char *show_string_function[5] = {"wave", "genFre", "zoom", "section", "measure"};
+char *show_string_stopORrun[2] = {"dynamic", "static"};
+char *show_string_measureType[2] = {"baseFre", "voltage"};
+// ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
 char show_string_wave_frequency[10] = {"1000Hz"};
-//»ù²¨ÆµÂÊ
+// ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
 char show_string_base_frequency[16] = {"BF:1000Hz"};
-//µçÑ¹×îÖµ
-char show_string_voltage_maximum[2][16] = {{"Vmax:3.30V"},{"Vmin:0.00V"}};
-//²¨ÐÎËõ·Å(·Å´ó)±¶Êý{1,2,3,4}
+// ï¿½ï¿½Ñ¹ï¿½ï¿½Öµ
+char show_string_voltage_maximum[2][16] = {{"Vmax:3.30V"}, {"Vmin:0.00V"}};
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½Å´ï¿½)ï¿½ï¿½ï¿½ï¿½{1,2,3,4}
 uint16_t zoomInMultiple = 1;
 
-//Ê±ÓòÍ¼Ïñ»æÍ¼Êý¾Ý»º´æ
-//plot_size|(480)¸öµã£¬point_i(x,y)¶ÔÓ¦(draw_t_cache[i][0],draw_t_cache[i][1])
+// Ê±ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½
+// plot_size|(480)ï¿½ï¿½ï¿½ã£¬point_i(x,y)ï¿½ï¿½Ó¦(draw_t_cache[i][0],draw_t_cache[i][1])
 uint16_t draw_t_cache[plot_size][2];
 
-//ÆµÓòÍ¼Ïñ»æÍ¼Êý¾Ý»º´æ
-//plot_size|(480)¸öµã£¬point_i(x,y)¶ÔÓ¦(draw_f_cache[i][0],draw_f_cache[i][1])
+// Æµï¿½ï¿½Í¼ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½
+// plot_size|(480)ï¿½ï¿½ï¿½ã£¬point_i(x,y)ï¿½ï¿½Ó¦(draw_f_cache[i][0],draw_f_cache[i][1])
 uint16_t draw_f_cache[plot_size][2];
 
-
-//FFT³õÊ¼»¯
-arm_cfft_radix4_instance_f32 scfft;//FFT½á¹¹Ìå
-//FFTÊäÈëÊä³ö
-float FFT_INPUT[adc_cache_size * 2];//¶ÔÓ¦Ã¿¸öÊµ²¿´´½¨Ðé²¿£¬ËùÒÔ2±¶³¤
-float FFT_OUTPUT[adc_cache_size];//FFTÊä³ö½øÐÐÁË´¦Àí£¬Ã¿¸öfloat¸ßµÍ16Î»·Ö±ð´æ·ÅÊµ²¿Ðé²¿£¬ÎÞÐè2±¶
+// FFTï¿½ï¿½Ê¼ï¿½ï¿½
+arm_cfft_radix4_instance_f32 scfft; // FFTï¿½á¹¹ï¿½ï¿½
+// FFTï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+float FFT_INPUT[adc_cache_size * 2]; // ï¿½ï¿½Ó¦Ã¿ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½
+float FFT_OUTPUT[adc_cache_size];	 // FFTï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë´ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½floatï¿½ßµï¿½16Î»ï¿½Ö±ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½é²¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½
 float FFT_OUTPUT_MAX = 0;
 uint32_t FFT_OUTPUT_MAX_index = 0;
 
-//¼ÆÊý×¨ÓÃi
+// ï¿½ï¿½ï¿½ï¿½×¨ï¿½ï¿½i
 uint16_t i = 0;
-//·ÀÉÁÓÃÍ¼ÏñË¢ÐÂ¼ÆÊý£¬Îª0Ë¢ÐÂÍ¼Ïñ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ë¢ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Îª0Ë¢ï¿½ï¿½Í¼ï¿½ï¿½
 #define CNT_drawUpdate 8
 uint16_t i_drawUpdate = 1;
 
-//´¥·¢Î»ÖÃ
+// ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 uint16_t i_trigger = 0;
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
-    /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 
-    /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-    /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-    /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-    /* USER CODE END Init */
+	/* USER CODE END Init */
 
-    /* Configure the system clock */
-    SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-    /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-    /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-    /* Initialize all configured peripherals */
-    MX_GPIO_Init();
-    MX_DMA_Init();
-    MX_FSMC_Init();
-    MX_ADC1_Init();
-    MX_DAC_Init();
-    MX_TIM2_Init();
-    MX_TIM3_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_FSMC_Init();
+	MX_ADC1_Init();
+	MX_DAC_Init();
+	MX_TIM2_Init();
+	MX_TIM3_Init();
+	/* USER CODE BEGIN 2 */
 
-    //¿ªÆôLCDÆÁÄ»
-    lcd_init();
-    lcd_display_dir(1);
+	// ï¿½ï¿½ï¿½ï¿½LCDï¿½ï¿½Ä»
+	lcd_init();
+	lcd_display_dir(1);
 
-    //¿ªÆôDAC
-    HAL_TIM_Base_Start(&htim2);
-    HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)wave_table[wave_table_i], N_sampling__, DAC_ALIGN_12B_R);
+	// ï¿½ï¿½ï¿½ï¿½DAC
+	HAL_TIM_Base_Start(&htim2);
+	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)wave_table[wave_table_i], N_sampling__, DAC_ALIGN_12B_R);
 
-    //¿ªÆôADC
-    HAL_TIM_Base_Start(&htim3);
-    //ÉèÖÃµ÷ÕûADC²ÉÑùÂÊ
-    htim3.Instance->ARR = 84e6/adc_fs-1;
-    //¿ªÊ¼´«ÊäÏÂÂÖÊý¾Ý£¬±êÖ¾Î»ÖÃ0
+	// ï¿½ï¿½ï¿½ï¿½ADC
+	HAL_TIM_Base_Start(&htim3);
+	// ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ADCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	htim3.Instance->ARR = 84e6 / adc_fs - 1;
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½0
 	Sign_samplingOver = 0;
-    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
 
-    //»æÍ¼½çÃæÍ¶Ó°Íø¸ñ
-    uint16_t delta_x[11] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-    uint16_t delta_y[11] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+	// ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½
+	uint16_t delta_x[11] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+	uint16_t delta_y[11] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
 
-    //³õÊ¼»¯lcd UI
-    lcdMaster_InitUI();
+	// ï¿½ï¿½Ê¼ï¿½ï¿½lcd UI
+	lcdMaster_InitUI();
 
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    while (1)
-    {
-    	//×¼±¸»æÍ¼£¬ÏÈÖÃÒ»¸ö±êÖ¾Î»
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
+		// ×¼ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ö¾Î»
 		Sign_readyDisplay = 1;
 		Sign_wave_exist = 0;
-		//µÈ´ýµ±Ç°ÂÖ´ÎADC-DMA´«ÊäÍê³É
-		while(!Sign_samplingOver);
-		//Ñ°ÕÒ´¥·¢µã
-		i_trigger = adc_trigger_size; //ÕÒ²»µ½±ãÏÔÊ¾×îÐÂ²ÉÑù½á¹û
-		for(i = 0; i < adc_trigger_size; i++){
-			if(adc_cache[i] < 50 && adc_cache[i+1] > 50){
+		// ï¿½È´ï¿½ï¿½ï¿½Ç°ï¿½Ö´ï¿½ADC-DMAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		while (!Sign_samplingOver)
+			;
+		// Ñ°ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ï¿½
+		i_trigger = adc_trigger_size; // ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Â²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		for (i = 0; i < adc_trigger_size; i++)
+		{
+			if (adc_cache[i] < 50 && adc_cache[i + 1] > 50)
+			{
 				i_trigger = i;
 				Sign_wave_exist = 1;
 				break;
 			}
 		}
-		if(!Sign_wave_exist){//²¨ÐÎ²»´æÔÚÔòÖØÐÂ²ÉÑù
+		if (!Sign_wave_exist)
+		{ // ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½ï¿½ï¿½
 			Sign_readyDisplay = 0;
 			Sign_samplingOver = 0;
 			HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
 			continue;
 		}
 
-		//ÏÈ¼ÆËã»æÍ¼ËùÐè²ÎÊý£¬ÔÙÇå³ýÉÏ´ÎÍ¼Ïñ£¬×îºóÔÙ¿ªÊ¼»æÍ¼£¬ÕâÑù¿ÉÒÔ¾¡¿ÉÄÜÑ¹ËõÆÁÄ»¿Õ°×µÄÊ±¼ä£¬¸ÄÉÆÊÓ¾õÐ§¹û
-    	//´ËÊ±ADC-DMA´¦ÓÚ¹Ø±Õ×´Ì¬£¬²»±Øµ£ÐÄ»º´æÊý¾Ý±»ÐÂÊý¾Ý¸²¸Ç
+		// ï¿½È¼ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¿ï¿½Ê¼ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Õ°×µï¿½Ê±ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½Ó¾ï¿½Ð§ï¿½ï¿½
+		// ï¿½ï¿½Ê±ADC-DMAï¿½ï¿½ï¿½Ú¹Ø±ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
 
-		//Ê±Óò
-		//Çó½âÊ±Óò»æÍ¼ËùÐèµã¼¯
-		for(i = 0; i < plot_size; i++){
-			wave_t.draw_cache[i][0] = (i)+delta_x[0];
-			//0.0268554687 = 110/4096
-			wave_t.draw_cache[i][1] = 160-delta_y[3]-(adc_cache[i_trigger+(i)]*0.0268554687);
+		// Ê±ï¿½ï¿½
+		// ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ã¼¯
+		for (i = 0; i < plot_size; i++)
+		{
+			wave_t.draw_cache[i][0] = (i) + delta_x[0];
+			// 0.0268554687 = 110/4096
+			wave_t.draw_cache[i][1] = 160 - delta_y[3] - (adc_cache[i_trigger + (i)] * 0.0268554687);
 		}
 
-		//ÆµÓò£¬FFT
-		//´¦ÀíÊäÈëÊý¾Ý
-		for(i = 0; i < adc_cache_size; i++){//²ÉÑùÊý¾Ý×ª»»
+		// Æµï¿½ï¿½FFT
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		for (i = 0; i < adc_cache_size; i++)
+		{ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 			FFT_INPUT[i * 2] = (float)(adc_cache[i]);
-			FFT_INPUT[i * 2 + 1] = 0;//½»Ìæ²åÁã£¬Ìí¼ÓÊý¾ÝµÄÐé²¿
+			FFT_INPUT[i * 2 + 1] = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½é²¿
 		}
-		//FFTÔËËã
+		// FFTï¿½ï¿½ï¿½ï¿½
 		arm_cfft_f32(&arm_cfft_sR_f32_len1024, FFT_INPUT, 0, 1);
-		//×ª»¯ÎªÊµÊý²¢È¡Ä£|¼ÆËã FFT Êä³öµÄ·ù¶È
+		// ×ªï¿½ï¿½ÎªÊµï¿½ï¿½ï¿½ï¿½È¡Ä£|ï¿½ï¿½ï¿½ï¿½ FFT ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
 		arm_cmplx_mag_f32(FFT_INPUT, FFT_OUTPUT, adc_cache_size);
-		//ÊÇ·ñÈ¥³ýÖ±Á÷·ÖÁ¿£¬²»×¢ÊÍÄÇ¾ÍÊÇÈ¥µô
-//		FFT_OUTPUT[0]=0;
-		//È¡³ö×î´óÖµ·½±ãÒ»»á¶ù»æÍ¼Ó³Éä×ø±ê
+		// ï¿½Ç·ï¿½È¥ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½È¥ï¿½ï¿½
+		//		FFT_OUTPUT[0]=0;
+		// È¡ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Ó³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		arm_max_f32(FFT_OUTPUT, adc_cache_size, &FFT_OUTPUT_MAX, &FFT_OUTPUT_MAX_index);
 
-		//Çó½âÆµÓò»æÍ¼ËùÐèµã¼¯
-		for(i = 0; i < plot_size; i++){
-			wave_f.draw_cache[i][0] = (i)+delta_x[0];
-			//**Ó³ÉäÏµÊý1.06875 = (512+1)/480
-			//Ó³Éä£¬ÍêÈ«»æ³öFFT½á¹û
-//			wave_f.draw_cache[i][1] = (uint16_t)(320-delta_y[5]-(FFT_OUTPUT[(uint16_t)(1.06875*i)]*110/FFT_OUTPUT_MAX));
-			//²»Ó³Éä£¬»æÖÆ´ó²¿·ÖFFT½á¹û
-			wave_f.draw_cache[i][1] = (uint16_t)(320-delta_y[5]-(FFT_OUTPUT[(uint16_t)(i)]*110/FFT_OUTPUT_MAX));
-//			draw_f_cache[i][1] = (uint16_t)(320-(FFT_OUTPUT[(uint16_t)(0.51*i)]*110/FFT_OUTPUT_MAX+delta_y[1]));
+		// ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ã¼¯
+		for (i = 0; i < plot_size; i++)
+		{
+			wave_f.draw_cache[i][0] = (i) + delta_x[0];
+			//**Ó³ï¿½ï¿½Ïµï¿½ï¿½1.06875 = (512+1)/480
+			// Ó³ï¿½ä£¬ï¿½ï¿½È«ï¿½ï¿½ï¿½FFTï¿½ï¿½ï¿½
+			//			wave_f.draw_cache[i][1] = (uint16_t)(320-delta_y[5]-(FFT_OUTPUT[(uint16_t)(1.06875*i)]*110/FFT_OUTPUT_MAX));
+			// ï¿½ï¿½Ó³ï¿½ä£¬ï¿½ï¿½ï¿½Æ´ó²¿·ï¿½FFTï¿½ï¿½ï¿½
+			wave_f.draw_cache[i][1] = (uint16_t)(320 - delta_y[5] - (FFT_OUTPUT[(uint16_t)(i)] * 110 / FFT_OUTPUT_MAX));
+			//			draw_f_cache[i][1] = (uint16_t)(320-(FFT_OUTPUT[(uint16_t)(0.51*i)]*110/FFT_OUTPUT_MAX+delta_y[1]));
 		}
 
-		switch(valueData_type){//ÅÐ¶Ï¶¯Ì¬Ë¢ÐÂµÄÊýÖµÀàÐÍ{»ù²¨ÆµÂÊ£¬²¨ÐÎ×îÖµ}
+		switch (valueData_type)
+		{ // ï¿½Ð¶Ï¶ï¿½Ì¬Ë¢ï¿½Âµï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½Æµï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ}
 		case 0:
-			//È¥³ýÖ±Á÷·ÖÁ¿ÔÙÇóÒ»´Î×îÖµµÃµ½»ù²¨ÆµÂÊ
-			FFT_OUTPUT[0]=0;
-			arm_max_f32(FFT_OUTPUT, adc_cache_size/2, &FFT_OUTPUT_MAX, &FFT_OUTPUT_MAX_index);
-			base_frequency = adc_fs*FFT_OUTPUT_MAX_index/1024;
-			//µÃµ½»ù²¨ÆµÂÊ×Ö·û´®
+			// È¥ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Öµï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
+			FFT_OUTPUT[0] = 0;
+			arm_max_f32(FFT_OUTPUT, adc_cache_size / 2, &FFT_OUTPUT_MAX, &FFT_OUTPUT_MAX_index);
+			base_frequency = adc_fs * FFT_OUTPUT_MAX_index / 1024;
+			// ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
 			sprintf(show_string_base_frequency, "BF:%dHz", base_frequency);
 			break;
 		case 1:
-			//ÎªÁË¼ò»¯ÔËËãÁ¿£¬²»Ê¹ÓÃÔ­Ê¼Êý¾Ý£¬Ê¹ÓÃ»æÍ¼Êý¾Ý
-			for(i = 0; i < plot_size; i++){
-				wave_maximum_Cache[i] = (float)adc_cache[i_trigger+i];
+			// Îªï¿½Ë¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½Ý£ï¿½Ê¹ï¿½Ã»ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
+			for (i = 0; i < plot_size; i++)
+			{
+				wave_maximum_Cache[i] = (float)adc_cache[i_trigger + i];
 			}
 			arm_max_f32(wave_maximum_Cache, plot_size, &wave_maximum[0], &wave_maximum_index[0]);
 			arm_min_f32(wave_maximum_Cache, plot_size, &wave_maximum[1], &wave_maximum_index[1]);
-			sprintf(show_string_voltage_maximum[0], "Vmax:%.3fV", wave_maximum[0]*3.3/4095);
-			sprintf(show_string_voltage_maximum[1], "Vmin:%.3fV", wave_maximum[1]*3.3/4095);
+			sprintf(show_string_voltage_maximum[0], "Vmax:%.3fV", wave_maximum[0] * 3.3 / 4095);
+			sprintf(show_string_voltage_maximum[1], "Vmin:%.3fV", wave_maximum[1] * 3.3 / 4095);
 			break;
 		default:
 			break;
 		}
 
-		//¿ª»æ~
-		//ºáÆÁ»æÖÆ x_MAX = 480 & y_MAX = 320
+		// ï¿½ï¿½ï¿½ï¿½~
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x_MAX = 480 & y_MAX = 320
 		i_drawUpdate--;
-		if(i_drawUpdate == 0){//ÂýËÙ»æÍ¼£¬¶à´ÎË¢ÐÂÊý¾Ý£¬Ö»»æÖÆÒ»Ö¡
-			i_drawUpdate=CNT_drawUpdate;
-			//ÏÈÇåÆÁÔÙ»æÍ¼£¬ÎªÁËÁ¼ºÃµÄÊÓ¾õÌåÑé£¬²ÉÓÃ¾Ö²¿ÇåÆÁ£¬Ë¢ÐÂÄÄÐ©ÄÚÈÝ£¬¾ÍÇåÄÄ²¿·Ö
-			//ÀûÓÃadc_cache[adc_trigger_size+i]»æÍ¼
-			//»æÍ¼ÔÝÍ£Î»£¬Îª1Ôò²»ÔÙ»æÍ¼£¬ÒÔ´ËÖÆ×÷²¨ÐÎÇÐÆ¬¡£
-			if(!Sign_stop){
-			//Ê×ÏÈ»æÖÆ²¨ÐÎÍ¼
-			//Çå³ýÊ±ÓòÍ¼Ïñ²¢ÖØÐÂ»æÖÆ
-			lcdMaster_Clear(lcdRoom_wave_t);
-			for(i = 0; i < plot_size/zoomInMultiple-1; i++){
-				lcd_draw_line(wave_t.draw_cache[i*zoomInMultiple][0], wave_t.draw_cache[i][1], \
-							  wave_t.draw_cache[(i+1)*zoomInMultiple][0], wave_t.draw_cache[i+1][1], RED);
+		if (i_drawUpdate == 0)
+		{ // ï¿½ï¿½ï¿½Ù»ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ò»Ö¡
+			i_drawUpdate = CNT_drawUpdate;
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù»ï¿½Í¼ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ó¾ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½Ã¾Ö²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½adc_cache[adc_trigger_size+i]ï¿½ï¿½Í¼
+			// ï¿½ï¿½Í¼ï¿½ï¿½Í£Î»ï¿½ï¿½Îª1ï¿½ï¿½ï¿½Ù»ï¿½Í¼ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½
+			if (!Sign_stop)
+			{
+				// ï¿½ï¿½ï¿½È»ï¿½ï¿½Æ²ï¿½ï¿½ï¿½Í¼
+				// ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½
+				lcdMaster_Clear(lcdRoom_wave_t);
+				for (i = 0; i < plot_size / zoomInMultiple - 1; i++)
+				{
+					lcd_draw_line(wave_t.draw_cache[i * zoomInMultiple][0], wave_t.draw_cache[i][1],
+								  wave_t.draw_cache[(i + 1) * zoomInMultiple][0], wave_t.draw_cache[i + 1][1], RED);
+				}
+				// ï¿½ï¿½ï¿½Æµï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½
+				lcdMaster_Clear(lcdRoom_wave_f);
+				for (i = 0; i < plot_size / zoomInMultiple - 1; i++)
+				{
+					lcd_draw_line(wave_f.draw_cache[i * zoomInMultiple][0], wave_f.draw_cache[i][1],
+								  wave_f.draw_cache[(i + 1) * zoomInMultiple][0], wave_f.draw_cache[i + 1][1], RED);
+				}
+				// Ë¢ï¿½Â¶ï¿½Ì¬ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½Æ¬Ê±ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½
+				switch (valueData_type)
+				{
+				case 0:
+					// ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
+					lcdMaster_Clear(lcdRoom_bf);
+					lcd_show_string(362, 320 - delta_y[3], 110, 24, 24, show_string_base_frequency, DARK_YELLOW);
+					break;
+				case 1:
+					// ï¿½ÅºÅ·ï¿½Öµ
+					lcdMaster_Clear(lcdRoom_bf);
+					lcd_show_string(362, 320 - 33, 120, 16, 16, show_string_voltage_maximum[0], DARK_YELLOW);
+					lcd_show_string(362, 320 - 17, 120, 16, 16, show_string_voltage_maximum[1], DARK_YELLOW);
+					break;
+				}
 			}
-			//Çå³ýÆµÓòÍ¼Ïñ²¢ÖØÐÂ»æÖÆ
-			lcdMaster_Clear(lcdRoom_wave_f);
-			for(i = 0; i < plot_size/zoomInMultiple-1; i++){
-				lcd_draw_line(wave_f.draw_cache[i*zoomInMultiple][0], wave_f.draw_cache[i][1], \
-							  wave_f.draw_cache[(i+1)*zoomInMultiple][0], wave_f.draw_cache[i+1][1], RED);
-			}
-			//Ë¢ÐÂ¶¯Ì¬ÏÔÊ¾µÄÊýÖµÐÅÏ¢£¬ÇÐÆ¬Ê±²»ÔÙË¢ÐÂ
-			switch(valueData_type){
-			case 0:
-				//»ù²¨ÆµÂÊ
-				lcdMaster_Clear(lcdRoom_bf);
-				lcd_show_string(362, 320-delta_y[3], 110, 24, 24, show_string_base_frequency, DARK_YELLOW);
-				break;
-			case 1:
-				//ÐÅºÅ·ùÖµ
-				lcdMaster_Clear(lcdRoom_bf);
-				lcd_show_string(362, 320-33, 120, 16, 16, show_string_voltage_maximum[0], DARK_YELLOW);
-				lcd_show_string(362, 320-17, 120, 16, 16, show_string_voltage_maximum[1], DARK_YELLOW);
-				break;
-			}
-		}
 
-
-			//Ñ¡ÔñÐÔË¢ÐÂ¸÷ÖÖÐÅÏ¢
-			if(Sign_stringUpdate){
+			// Ñ¡ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½Â¸ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+			if (Sign_stringUpdate)
+			{
 				lcdMaster_Clear(lcdRoom_string);
-				//Á½±ß¸÷¾à±ßÔµ6£¬480-6*2=468£¬468/3=156(Êµ¼ÊÉÏ£¬ÎÒ¿´×ÅÆÁÄ»µ÷µÄ´óÖÂÎ»ÖÃ)
-				//µ±Ç°¹¦ÄÜ
-				lcd_show_string(10, 320-delta_y[3], 100, 24, 24, show_string_function[Sign_function], DARK_YELLOW);
-				//¹¦ÄÜ²ÎÊý
-				switch(Sign_function){
-				case 0://µ±Ç°²¨ÐÎ
-					lcd_show_string(120, 320-delta_y[3], 120, 24, 24, show_string_waveType[wave_table_i], DARK_YELLOW);
+				// ï¿½ï¿½ï¿½ß¸ï¿½ï¿½ï¿½ï¿½Ôµ6ï¿½ï¿½480-6*2=468ï¿½ï¿½468/3=156(Êµï¿½ï¿½ï¿½Ï£ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½Î»ï¿½ï¿½)
+				// ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+				lcd_show_string(10, 320 - delta_y[3], 100, 24, 24, show_string_function[Sign_function], DARK_YELLOW);
+				// ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½
+				switch (Sign_function)
+				{
+				case 0: // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½
+					lcd_show_string(120, 320 - delta_y[3], 120, 24, 24, show_string_waveType[wave_table_i], DARK_YELLOW);
 					break;
-				case 1://µ±Ç°²¨ÐÎÆµÂÊ
-					lcd_show_string(120, 320-delta_y[3], 120, 24, 24, show_string_wave_frequency, DARK_YELLOW);
+				case 1: // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
+					lcd_show_string(120, 320 - delta_y[3], 120, 24, 24, show_string_wave_frequency, DARK_YELLOW);
 					break;
-				case 2://µ±Ç°²¨ÐÎµÄËõ·Å±¶Êý
-					lcd_show_string(120, 320-delta_y[3], 120, 24, 24, show_string_zoomIn[zoomInMultiple-1], DARK_YELLOW);
+				case 2: // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½
+					lcd_show_string(120, 320 - delta_y[3], 120, 24, 24, show_string_zoomIn[zoomInMultiple - 1], DARK_YELLOW);
 					break;
-				case 3://Í£Ö¹»òÔËÐÐ
-					lcd_show_string(120, 320-delta_y[3], 120, 24, 24, show_string_stopORrun[Sign_stop], DARK_YELLOW);
+				case 3: // Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					lcd_show_string(120, 320 - delta_y[3], 120, 24, 24, show_string_stopORrun[Sign_stop], DARK_YELLOW);
 					break;
-				case 4://ÏÔÊ¾µÄÊý¾ÝÀàÐÍ{»ù²¨ÆµÂÊ,µçÑ¹}
-					lcd_show_string(120, 320-delta_y[3], 120, 24, 24, show_string_measureType[valueData_type], DARK_YELLOW);
+				case 4: // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½,ï¿½ï¿½Ñ¹}
+					lcd_show_string(120, 320 - delta_y[3], 120, 24, 24, show_string_measureType[valueData_type], DARK_YELLOW);
 					break;
 				default:
 					break;
 				}
-				//²ÉÑùÆµÂÊ
-				lcd_show_string(230, 320-delta_y[3], 110, 24, 24, show_string_fs, DARK_YELLOW);
-				//ÐÅÏ¢ÒÑË¢ÐÂ£¬¸´Î»±êÖ¾Î»
+				// ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½
+				lcd_show_string(230, 320 - delta_y[3], 110, 24, 24, show_string_fs, DARK_YELLOW);
+				// ï¿½ï¿½Ï¢ï¿½ï¿½Ë¢ï¿½Â£ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ö¾Î»
 				Sign_stringUpdate = 0;
 			}
 		}
 
-    	//»æÍ¼Íê³É£¬¸´Î»±êÖ¾Î»£¬ÖØÐÂ¿ªÆôADC-DMA
-    	Sign_readyDisplay = 0;
-    	Sign_samplingOver = 0;
-    	HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
+		// ï¿½ï¿½Í¼ï¿½ï¿½É£ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ADC-DMA
+		Sign_readyDisplay = 0;
+		Sign_samplingOver = 0;
+		HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
 
-    	//DAC²¨ÐÎÊÇ·ñÐèÒªÇÐ»»
-    	if(Sign_dacToggleWave == 1){//ÐèÒª
-    		//ÚÀ£¬ÎÒ1ms¶¼²»Ïû£¬¾ÍÊÇÌ°
-//    		//ÑÓ³Ù10msÏû¶¶
-//    		HAL_Delay(10);
-    		//Ë¢ÐÂDAC²úÉúµÄ²¨ÐÎ
+		// DACï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½Ð»ï¿½
+		if (Sign_dacToggleWave == 1)
+		{ // ï¿½ï¿½Òª
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1msï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°
+			//    		//ï¿½Ó³ï¿½10msï¿½ï¿½ï¿½ï¿½
+			//    		HAL_Delay(10);
+			// Ë¢ï¿½ï¿½DACï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
 			HAL_DAC_Stop_DMA(&hdac, DAC1_CHANNEL_1);
 			HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)wave_table[wave_table_i], N_sampling__, DAC_ALIGN_12B_R);
-			Sign_dacToggleWave = 0;//¸´Î»±êÖ¾Î»
-			HAL_NVIC_EnableIRQ(KEY_ToggleWaveTable_EXTI_IRQn);//ÔÙ´Î¿ªÆôÇÐ»»²¨ÐÎÖÐ¶Ï
-    	}
-        /* USER CODE END WHILE */
+			Sign_dacToggleWave = 0;							   // ï¿½ï¿½Î»ï¿½ï¿½Ö¾Î»
+			HAL_NVIC_EnableIRQ(KEY_ToggleWaveTable_EXTI_IRQn); // ï¿½Ù´Î¿ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+		}
+		/* USER CODE END WHILE */
 
-        /* USER CODE BEGIN 3 */
-    }
-    /* USER CODE END 3 */
+		/* USER CODE BEGIN 3 */
+	}
+	/* USER CODE END 3 */
 }
 
 /**
-    * @brief System Clock Configuration
-    * @retval None
-    */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-    /** Configure the main internal regulator output voltage
-    */
-    __HAL_RCC_PWR_CLK_ENABLE();
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	/** Configure the main internal regulator output voltage
+	 */
+	__HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-    /** Initializes the RCC Oscillators according to the specified parameters
-    * in the RCC_OscInitTypeDef structure.
-    */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-    RCC_OscInitStruct.PLL.PLLM = 8;
-    RCC_OscInitStruct.PLL.PLLN = 168;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-    RCC_OscInitStruct.PLL.PLLQ = 4;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-    {
-        Error_Handler();
-    }
+	/** Initializes the RCC Oscillators according to the specified parameters
+	 * in the RCC_OscInitTypeDef structure.
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	RCC_OscInitStruct.PLL.PLLM = 8;
+	RCC_OscInitStruct.PLL.PLLN = 168;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 4;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	{
+		Error_Handler();
+	}
 
-    /** Initializes the CPU, AHB and APB buses clocks
-    */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                                                            |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	/** Initializes the CPU, AHB and APB buses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
-    {
-        Error_Handler();
-    }
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+	{
+		Error_Handler();
+	}
 }
 
 /* USER CODE BEGIN 4 */
@@ -455,33 +463,33 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
-  /* USER CODE END Error_Handler_Debug */
+	/* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
+	/* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
+	/* USER CODE BEGIN 6 */
+	/* User can add his own implementation to report the file name and line number,
+	   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	/* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

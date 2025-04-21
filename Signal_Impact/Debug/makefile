@@ -63,8 +63,8 @@ all: main-build
 main-build: Signal_Impact.elf secondary-outputs
 
 # 工具调用
-Signal_Impact.elf Signal_Impact.map: $(OBJS) $(USER_OBJS) C:\Users\JamesHotten\Desktop\code\C1\EasySignalHandler\Signal_Impact\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Signal_Impact.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\JamesHotten\Desktop\code\C1\EasySignalHandler\Signal_Impact\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Signal_Impact.map" -Wl,--gc-sections -static -L../CMSIS_DSP/GCC --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Signal_Impact.elf Signal_Impact.map: $(OBJS) $(USER_OBJS) C:\Users\JamesHotten\Desktop\code\C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Signal_Impact.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\JamesHotten\Desktop\code\C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Signal_Impact.map" -Wl,--gc-sections -static -L../CMSIS_DSP/GCC --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo '已结束构建目标： $@'
 	@echo ' '
 

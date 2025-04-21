@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    adc.c
-  * @brief   This file provides code for the configuration
-  *          of the ADC instances.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    adc.c
+ * @brief   This file provides code for the configuration
+ *          of the ADC instances.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
@@ -42,12 +42,12 @@ void MX_ADC1_Init(void)
     /* USER CODE END ADC1_Init 1 */
 
     /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-    */
+     */
     hadc1.Instance = ADC1;
     hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
     hadc1.Init.Resolution = ADC_RESOLUTION_12B;
     hadc1.Init.ScanConvMode = DISABLE;
-    hadc1.Init.ContinuousConvMode = DISABLE;
+    hadc1.Init.ContinuousConvMode = ENABLE;
     hadc1.Init.DiscontinuousConvMode = DISABLE;
     hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
     hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T3_TRGO;
@@ -61,7 +61,7 @@ void MX_ADC1_Init(void)
     }
 
     /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-    */
+     */
     sConfig.Channel = ADC_CHANNEL_5;
     sConfig.Rank = 1;
     sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
@@ -72,18 +72,17 @@ void MX_ADC1_Init(void)
     /* USER CODE BEGIN ADC1_Init 2 */
 
     /* USER CODE END ADC1_Init 2 */
-
 }
 
-void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
+void HAL_ADC_MspInit(ADC_HandleTypeDef *adcHandle)
 {
 
     GPIO_InitTypeDef GPIO_InitStruct = {0};
-    if(adcHandle->Instance==ADC1)
+    if (adcHandle->Instance == ADC1)
     {
-    /* USER CODE BEGIN ADC1_MspInit 0 */
+        /* USER CODE BEGIN ADC1_MspInit 0 */
 
-    /* USER CODE END ADC1_MspInit 0 */
+        /* USER CODE END ADC1_MspInit 0 */
         /* ADC1 clock enable */
         __HAL_RCC_ADC1_CLK_ENABLE();
 
@@ -116,22 +115,22 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
             Error_Handler();
         }
 
-        __HAL_LINKDMA(adcHandle,DMA_Handle,hdma_adc1);
+        __HAL_LINKDMA(adcHandle, DMA_Handle, hdma_adc1);
 
-    /* USER CODE BEGIN ADC1_MspInit 1 */
+        /* USER CODE BEGIN ADC1_MspInit 1 */
 
-    /* USER CODE END ADC1_MspInit 1 */
+        /* USER CODE END ADC1_MspInit 1 */
     }
 }
 
-void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef *adcHandle)
 {
 
-    if(adcHandle->Instance==ADC1)
+    if (adcHandle->Instance == ADC1)
     {
-    /* USER CODE BEGIN ADC1_MspDeInit 0 */
+        /* USER CODE BEGIN ADC1_MspDeInit 0 */
 
-    /* USER CODE END ADC1_MspDeInit 0 */
+        /* USER CODE END ADC1_MspDeInit 0 */
         /* Peripheral clock disable */
         __HAL_RCC_ADC1_CLK_DISABLE();
 
@@ -142,41 +141,43 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
         /* ADC1 DMA DeInit */
         HAL_DMA_DeInit(adcHandle->DMA_Handle);
-    /* USER CODE BEGIN ADC1_MspDeInit 1 */
+        /* USER CODE BEGIN ADC1_MspDeInit 1 */
 
-    /* USER CODE END ADC1_MspDeInit 1 */
+        /* USER CODE END ADC1_MspDeInit 1 */
     }
 }
 
 /* USER CODE BEGIN 1 */
-//±êÖ¾Î»
-//£¨²¨ÐÎ»æÖÆÔ¤±¸ & ²ÉÑùÍê³É£©±êÖ¾Î»£¬ÅäºÏÍê³É²¨ÐÎ²ÉÑù¼°ÏÔÊ¾¹¤×÷
-//uint8_t Sign_readyDisplay = 0;
-//uint8_t Sign_samplingOver = 0;
+// ï¿½ï¿½Ö¾Î»
+// ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ & ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É²ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+// uint8_t Sign_readyDisplay = 0;
+// uint8_t Sign_samplingOver = 0;
 extern uint8_t Sign_readyDisplay;
 extern uint8_t Sign_samplingOver;
 extern uint16_t adc_cache[adc_cache_size];
-//ADC_DMA»Øµ÷£¬¸ù¾Ý±êÖ¾Î»ÅÐ¶Ïcpuµ±Ç°×´Ì¬²¢Ö´ÐÐ£¨½øÐÐÏÂÂÖADC²ÉÑù or Í£Ö¹²ÉÑù£¬µÈ´ýcpu»æÍ¼£©
-//ADC_DMAConvCplt
-//HAL_ADC_ConvCpltCallback
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
-	//±¾ÂÖDMAÊý¾Ý´«ÊäÍê±Ï£¬±êÖ¾Î»ÖÃ1
-	Sign_samplingOver = 1;
-	//Çå³ýÖÐ¶Ï±êÖ¾Î»
-	//__HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4);
-	//ÅÐ¶Ïcpu×´Ì¬
-	if(Sign_readyDisplay && Sign_samplingOver == 1){
-		//cpuÒÑ¾­×¼±¸ºÃ»æÍ¼£¬DMA²»ÔÙ´«ÊäÏÂÂÖÊý¾Ý£¬´ýcpu»æÍ¼½áÊøºóÓÉcpuÔÙ´Î¿ªÆôADC-DMA
-		//DMAÑ¡ÓÃnormalÄ£Ê½£¬²»ÔÙ¿ªÆô¼´¹Ø±Õ
-		;
-	}
-	else{
-		//cpuÎ´×¼±¸ºÃ»æÍ¼£¬DMA´«ÊäÏÂÂÖÊý¾Ý
-		//±êÖ¾Î»ÖÃ0£¬¿ªÊ¼´«ÊäÏÂÂÖÊý¾Ý
-		Sign_samplingOver = 0;
-		HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
-	}
+// ADC_DMAï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½Ö¾Î»ï¿½Ð¶ï¿½cpuï¿½ï¿½Ç°×´Ì¬ï¿½ï¿½Ö´ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ADCï¿½ï¿½ï¿½ï¿½ or Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½cpuï¿½ï¿½Í¼ï¿½ï¿½
+// ADC_DMAConvCplt
+// HAL_ADC_ConvCpltCallback
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    // ï¿½ï¿½ï¿½ï¿½DMAï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½1
+    Sign_samplingOver = 1;
+    // ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½Ö¾Î»
+    //__HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4);
+    // ï¿½Ð¶ï¿½cpu×´Ì¬
+    if (Sign_readyDisplay && Sign_samplingOver == 1)
+    {
+        // cpuï¿½Ñ¾ï¿½×¼ï¿½ï¿½ï¿½Ã»ï¿½Í¼ï¿½ï¿½DMAï¿½ï¿½ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½cpuï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½cpuï¿½Ù´Î¿ï¿½ï¿½ï¿½ADC-DMA
+        // DMAÑ¡ï¿½ï¿½normalÄ£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½
+        ;
+    }
+    else
+    {
+        // cpuÎ´×¼ï¿½ï¿½ï¿½Ã»ï¿½Í¼ï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½Ö¾Î»ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Sign_samplingOver = 0;
+        HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_cache, adc_cache_size);
+    }
 }
-
 
 /* USER CODE END 1 */

@@ -34,13 +34,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/dac.h ../Core/Inc/dma.h \
- ../Core/Inc/tim.h ../Core/Inc/gpio.h ../Core/Inc/fsmc.h \
- ../Core/Src/../../Drivers/BSP/LCD/lcd.h \
- ../Core/Src/../../Drivers/BSP/LCD/../../SYSTEM/sys/sys.h \
- ../Core/Inc/waveform_table.h ../CMSIS_DSP/Include/arm_math.h \
+ ../Core/Inc/tim.h ../Core/Inc/gpio.h ../CMSIS_DSP/Include/arm_math.h \
  ../CMSIS_DSP/Include/arm_const_structs.h ../CMSIS_DSP/Include/arm_math.h \
- ../CMSIS_DSP/Include/arm_common_tables.h ../Core/Inc/lcdMaster.h \
- ../Core/Inc/../../Drivers/BSP/LCD/lcd.h
+ ../CMSIS_DSP/Include/arm_common_tables.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -82,13 +78,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/dma.h:
 ../Core/Inc/tim.h:
 ../Core/Inc/gpio.h:
-../Core/Inc/fsmc.h:
-../Core/Src/../../Drivers/BSP/LCD/lcd.h:
-../Core/Src/../../Drivers/BSP/LCD/../../SYSTEM/sys/sys.h:
-../Core/Inc/waveform_table.h:
 ../CMSIS_DSP/Include/arm_math.h:
 ../CMSIS_DSP/Include/arm_const_structs.h:
 ../CMSIS_DSP/Include/arm_math.h:
 ../CMSIS_DSP/Include/arm_common_tables.h:
-../Core/Inc/lcdMaster.h:
-../Core/Inc/../../Drivers/BSP/LCD/lcd.h:
