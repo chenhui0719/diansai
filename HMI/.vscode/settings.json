@@ -1,0 +1,6 @@
+{
+  "stm32-for-vscode.makePath": false,
+  "files.associations": {
+    "tjc_usart_hmi.h": "c"
+  }
+}
