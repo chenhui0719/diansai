@@ -140,29 +140,14 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *adcHandle) {
 }
 
 /* USER CODE BEGIN 1 */
-// 锟斤拷志位
-// 锟斤拷锟斤拷锟轿伙拷锟斤拷预锟斤拷 & 锟斤拷锟斤拷锟斤拷桑锟斤拷锟街疚伙拷锟斤拷锟斤拷锟斤拷刹锟斤拷尾锟斤拷锟斤拷锟斤拷锟绞撅拷锟斤拷锟�
-// uint8_t Sign_readyDisplay = 0;
-// uint8_t Sign_samplingOver = 0;
 extern uint8_t Sign_readyDisplay;
 extern uint8_t Sign_samplingOver;
 extern uint16_t adc_cache[adc_cache_size];
-// ADC_DMA锟截碉拷锟斤拷锟斤拷锟捷憋拷志位锟叫讹拷cpu锟斤拷前状态锟斤拷执锟叫ｏ拷锟斤拷锟斤拷锟斤拷锟斤拷ADC锟斤拷锟斤拷 or 停止锟斤拷锟斤拷锟斤拷锟饺达拷cpu锟斤拷图锟斤拷
-// ADC_DMAConvCplt
-// HAL_ADC_ConvCpltCallback
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-	// 锟斤拷锟斤拷DMA锟斤拷锟捷达拷锟斤拷锟斤拷希锟斤拷锟街疚伙拷锟�1
 	Sign_samplingOver = 1;
-	// 锟斤拷锟斤拷卸媳锟街疚�
-	//__HAL_DMA_CLEAR_FLAG(&hdma_adc1, DMA_FLAG_TCIF0_4);
-	// 锟叫讹拷cpu状态
 	if (Sign_samplingOver == 1) {
-		// cpu锟窖撅拷准锟斤拷锟矫伙拷图锟斤拷DMA锟斤拷锟劫达拷锟斤拷锟斤拷锟斤拷锟斤拷锟捷ｏ拷锟斤拷cpu锟斤拷图锟斤拷锟斤拷锟斤拷锟斤拷cpu锟劫次匡拷锟斤拷ADC-DMA
-		// DMA选锟斤拷normal模式锟斤拷锟斤拷锟劫匡拷锟斤拷锟斤拷锟截憋拷
 		;
 	} else {
-		// cpu未准锟斤拷锟矫伙拷图锟斤拷DMA锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
-		// 锟斤拷志位锟斤拷0锟斤拷锟斤拷始锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
 		Sign_samplingOver = 0;
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_cache, adc_cache_size);
 	}
