@@ -60,8 +60,8 @@ all: main-build
 main-build: 0411.elf secondary-outputs
 
 # Tool invocations
-0411.elf 0411.map: $(OBJS) $(USER_OBJS) E:\2024_C1\diansai\HMI1\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "0411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\2024_C1\diansai\HMI1\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="0411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+0411.elf 0411.map: $(OBJS) $(USER_OBJS) E:\2024_C1\diansai\HMI\STM32F407VETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "0411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\2024_C1\diansai\HMI\STM32F407VETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="0411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
