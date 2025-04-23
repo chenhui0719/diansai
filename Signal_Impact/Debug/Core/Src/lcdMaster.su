@@ -1,2 +1,0 @@
-../Core/Src/lcdMaster.c:4:6:lcdMaster_InitUI	16	static
-../Core/Src/lcdMaster.c:12:6:lcdMaster_Clear	24	static
