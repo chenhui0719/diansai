@@ -4,6 +4,9 @@
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
+#include "usart.h"
+#include "tjc_usart_hmi.h"
+#include "stdio.h"
 
 #include "arm_math.h"
 #include "arm_const_structs.h"
@@ -11,9 +14,11 @@
 #define PWM_MAX 100
 #define SAMPLES 1000
 #define SAMPLERATE 500
+#define FRAME_LENGTH 7//数据包大小
 
-uint8_t Sign_samplingOver = 0;
-uint8_t Sign_wave_exist = 0;
+
+uint8_t Sign_samplingOver = 0;//信号采样是否完成
+uint8_t Sign_wave_exist = 0;//波形是否存在
 uint16_t adc_cache[adc_cache_size];
 uint16_t i_trigger = 0;
 uint32_t adc_fs = 51.2e3;
@@ -26,6 +31,13 @@ uint32_t FFT_OUTPUT_MAX_index = 0;
 
 uint16_t pwm[SAMPLES] = { 0 };
 uint16_t spwm[SAMPLERATE] = { 0 };
+uint16_t S_readyDisplay = 0;//是否进行幅频特性显示
+float Center_freq = 10.3;//中心频率
+float Bandwith = 16.5;//带宽
+float IMinA = 78.1;//带内最小衰减
+int t_freq = 200 ;//信号采样频率
+int single_freq = 300;
+
 
 void spwm_table() {
 	for (int i = 0; i < SAMPLES; ++i) {
@@ -41,7 +53,7 @@ void generateWave(int freq) {
 	for (int i = 0; i < SAMPLERATE; ++i) {
 		int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1)
 				/ period; // 计算当前采样点对应的pwm索引
-		spwm[i] = pwm[pwmIndex];
+		spwm[i] = pwm[pwmIndex]*4095/100;
 	}
 }
 
@@ -93,6 +105,7 @@ int main(void) {
 	MX_DAC_Init();
 	MX_TIM2_Init();
 	MX_TIM3_Init();
+	MX_USART1_UART_Init();
 
 	HAL_TIM_Base_Start(&htim2);
 	HAL_TIM_Base_Start(&htim3);
@@ -103,7 +116,24 @@ int main(void) {
 	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t*) spwm, 50000,
 	DAC_ALIGN_12B_R);
 
+	HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); 
+
 	while (1) {
+		char str[10];
+        sprintf(str, "n0.val=%d", single_freq);
+		tjc_send_string(str);
+
+		sprintf(str, "x0.val=%d", (int)(Center_freq * 100));
+		tjc_send_string(str);
+		sprintf(str, "x1.val=%d", (int)(Bandwith * 100));
+		tjc_send_string(str);
+	    sprintf(str, "x2.val=%d", (int)(IMinA * 100));
+		tjc_send_string(str);
+
+	    sprintf(str, "n1.val=%d", t_freq);
+		tjc_send_string(str);
+
+
 		Sign_wave_exist = 0;
 		while (!Sign_samplingOver)
 			;

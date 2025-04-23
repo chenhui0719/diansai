@@ -1,6 +1,6 @@
 ################################################################################
-# 自动生成的文件。不要编辑！
-# Toolchain: GNU Tools for STM32 (13.3.rel1)
+# Automatically-generated file. Do not edit!
+# Toolchain: GNU Tools for STM32 (10.3-2021.10)
 ################################################################################
 
 -include ../makefile.init
@@ -12,7 +12,6 @@ RM := rm -rf
 -include Drivers/SYSTEM/sys/subdir.mk
 -include Drivers/SYSTEM/delay/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
--include Drivers/BSP/LCD/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -56,29 +55,29 @@ OBJDUMP_LIST += \
 Signal_Impact.list \
 
 
-# 所有目标
+# All Target
 all: main-build
 
-# 主构建目标
+# Main-build Target
 main-build: Signal_Impact.elf secondary-outputs
 
-# 工具调用
-Signal_Impact.elf Signal_Impact.map: $(OBJS) $(USER_OBJS) C:\Users\JamesHotten\Desktop\code\C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Signal_Impact.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\JamesHotten\Desktop\code\C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Signal_Impact.map" -Wl,--gc-sections -static -L../CMSIS_DSP/GCC --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
-	@echo '已结束构建目标： $@'
+# Tool invocations
+Signal_Impact.elf Signal_Impact.map: $(OBJS) $(USER_OBJS) E:\2024_C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Signal_Impact.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\2024_C1\diansai\Signal_Impact\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Signal_Impact.map" -Wl,--gc-sections -static -L../CMSIS_DSP/GCC --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+	@echo 'Finished building target: $@'
 	@echo ' '
 
 default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-size  $(EXECUTABLES)
-	@echo '已结束构建： $@'
+	@echo 'Finished building: $@'
 	@echo ' '
 
 Signal_Impact.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Signal_Impact.list"
-	@echo '已结束构建： $@'
+	@echo 'Finished building: $@'
 	@echo ' '
 
-# 其他目标
+# Other Targets
 clean:
 	-$(RM) Signal_Impact.elf Signal_Impact.list Signal_Impact.map default.size.stdout
 	-@echo ' '

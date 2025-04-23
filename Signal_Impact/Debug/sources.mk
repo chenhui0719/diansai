@@ -1,6 +1,6 @@
 ################################################################################
-# 自动生成的文件。不要编辑！
-# Toolchain: GNU Tools for STM32 (13.3.rel1)
+# Automatically-generated file. Do not edit!
+# Toolchain: GNU Tools for STM32 (10.3-2021.10)
 ################################################################################
 
 ELF_SRCS := 
@@ -9,7 +9,6 @@ S_SRCS :=
 C_SRCS := 
 S_UPPER_SRCS := 
 O_SRCS := 
-CYCLO_FILES := 
 SIZE_OUTPUT := 
 OBJDUMP_LIST := 
 SU_FILES := 
@@ -24,7 +23,6 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
-Drivers/BSP/LCD \
 Drivers/STM32F4xx_HAL_Driver/Src \
 Drivers/SYSTEM/delay \
 Drivers/SYSTEM/sys \
