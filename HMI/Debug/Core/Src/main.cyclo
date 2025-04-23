@@ -1,8 +1,9 @@
-../Core/Src/main.c:65:6:spwm_table	2
-../Core/Src/main.c:73:6:generateWave	2
-../Core/Src/main.c:86:7:calculate_frequency	5
-../Core/Src/main.c:105:7:calculate_average_peak_to_peak	13
-../Core/Src/main.c:162:6:perform_adc_sampling	5
-../Core/Src/main.c:181:6:perform_fft	1
-../Core/Src/main.c:208:6:SystemClock_Config	3
-../Core/Src/main.c:275:5:main	1
+../Core/Src/main.c:47:5:main	1
+../Core/Src/main.c:89:6:SystemClock_Config	3
+../Core/Src/main.c:122:6:spwm_table	2
+../Core/Src/main.c:131:6:generateWave	2
+../Core/Src/main.c:142:7:calculate_frequency	5
+../Core/Src/main.c:164:7:calculate_average_peak_to_peak	13
+../Core/Src/main.c:231:6:perform_adc_sampling	5
+../Core/Src/main.c:254:6:perform_fft	1
+../Core/Src/main.c:262:6:Error_Handler	1

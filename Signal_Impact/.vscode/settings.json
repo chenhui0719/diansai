@@ -1,7 +1,0 @@
-{
-  "stm32-for-vscode.makePath": false,
-  "files.associations": {
-    "*.bak": "c",
-    "arm_const_structs.h": "c"
-  }
-}

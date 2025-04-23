@@ -139,7 +139,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *adcHandle) {
 	}
 }
 
-/* USER CODE BEGIN 1 */
 extern uint8_t Sign_readyDisplay;
 extern uint8_t Sign_samplingOver;
 extern uint16_t adc_cache[adc_cache_size];
@@ -153,4 +152,3 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	}
 }
 
-/* USER CODE END 1 */
