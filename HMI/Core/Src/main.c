@@ -34,17 +34,17 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-/* 环形缓冲区大�? */
+/* 锟斤拷瑜般��锟斤拷��锟藉������锟�? */
 #define RING_BUFFER_SIZE     256
 
-/* 定义环形缓冲区结构体 */
+/* �癸拷娑�锟斤拷锟借ぐ��锟斤拷��锟借�癸拷锟斤拷娴ｏ拷 */
 typedef struct {
     uint8_t buffer[RING_BUFFER_SIZE];
     uint16_t head;
     uint16_t tail;
 } RingBuffer;
 
-/* 环形缓冲区全�?变量 */
+/* 锟斤拷瑜般��锟斤拷��锟藉��锟斤拷��锟�?锟斤拷锟斤拷 */
 RingBuffer rx_ring_buffer;
 
 /* PRIVATE FUNCTIONS */
@@ -79,26 +79,26 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint16_t S_readyDisplay = 0;//是否进行幅频特性显示
-float Center_freq = 10.3;//中心频率
-float Bandwith = 16.5;//带宽
-float IMinA = 78.1;//带内最小衰减
-int t_freq = 200 ;//信号采样频率
-int single_freq = 300;
+uint16_t S_readyDisplay = 0;//锟斤拷锟斤拷�╋拷��锟介��锟芥０锟斤拷瑙�锟窖�锟藉�с��
+float Center_freq = 10.3;//娑�锟借�锟芥０锟斤拷锟�
+float Bandwith = 16.5;//��锟界�癸拷
+float IMinA = 78.1;//��锟斤拷锟斤拷锟界��锟界���匡拷锟�
+float t_freq = 200.0 ;//娣��筹拷�斤拷锟斤拷�斤拷锟斤拷
+float single_freq = 300.0;
 
-/* 环形缓冲区初始化 */
+/* 锟斤拷瑜般��锟斤拷��锟藉��锟斤拷婵�锟斤拷锟� */
 void initRingBuffer(void) {
     rx_ring_buffer.head = 0;
     rx_ring_buffer.tail = 0;
 }
 
-/* 向环形缓冲区添加数据 */
+/* 锟斤拷锟斤拷瑜般��锟斤拷��锟界����锟斤拷锟界��锟斤拷 */
 void ringBufferAdd(uint8_t data) {
     uint16_t next_head = (rx_ring_buffer.head + 1) % RING_BUFFER_SIZE;
 
-    /* 如果缓冲区已满，则覆盖旧数据 */
+    /* 婵★拷锟斤拷缂�锟斤拷��锟藉���″���锟斤拷锟界��锟斤拷锟斤拷�锟界��锟斤拷 */
     if (next_head == rx_ring_buffer.tail) {
-        /* 当缓冲区满时，移动尾指针以覆盖旧数据 */
+        /* 瑜帮拷缂�锟斤拷��锟界��寮э拷璁癸拷缁�璇诧拷�ョ��锟斤拷锟斤拷娴���锟斤拷锟斤拷�锟界��锟斤拷 */
         rx_ring_buffer.tail = (rx_ring_buffer.tail + 1) % RING_BUFFER_SIZE;
     }
 
@@ -106,10 +106,10 @@ void ringBufferAdd(uint8_t data) {
     rx_ring_buffer.head = next_head;
 }
 
-/* 从环形缓冲区读取数据 */
+/* 娴�锟斤拷锟借ぐ��锟斤拷��锟介缚锟借�诧拷锟斤拷��锟斤拷 */
 uint8_t ringBufferGet(void) {
     if (rx_ring_buffer.tail == rx_ring_buffer.head) {
-        /* 缓冲区为�? */
+        /* 缂�锟斤拷��锟借桨璐���锟�? */
         return 0;
     }
 
@@ -118,24 +118,24 @@ uint8_t ringBufferGet(void) {
     return data;
 }
 
-/* 获取环形缓冲区中的数据数�? */
+/* 锟藉嘲锟斤拷锟斤拷瑜般��锟斤拷��锟借桨��锟斤拷锟界��锟斤拷锟藉府��? */
 uint16_t ringBufferSize(void) {
     return (RING_BUFFER_SIZE + rx_ring_buffer.head - rx_ring_buffer.tail) % RING_BUFFER_SIZE;
 }
 
-/* UART接收中断回调函数 */
+/* UART锟姐��锟芥�佃��锟斤拷锟斤拷��锟斤拷�ワ拷锟� */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
         uint8_t received_data = RxBuffer[0];
-        ringBufferAdd(received_data);  // 将接收的数据添加到环形缓冲区
-        HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); // 重新启动接收中断
+        ringBufferAdd(received_data);  // ��锟斤拷��锟藉��锟斤拷锟界��锟斤拷濞ｈ�诧拷锟斤拷��锟斤拷瑜般��锟斤拷��锟斤拷
+        HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); // 锟斤拷锟芥�匡拷锟斤拷��锟姐��锟芥�佃��锟斤拷
     }
 }
 
-/* 处理接收到的数据 */
+/* 婢讹拷锟斤拷锟姐��锟借泛锟芥��锟斤拷锟界��锟斤拷 */
 void processReceivedData(void) {
-    // 在这里可以添加处理接收到的数据的代码
-    // 例如�?查缓冲区中的数据并进行相应处�?
+    // 锟姐��锟斤拷锟斤拷锟芥�����锟斤拷婢讹拷锟斤拷锟姐��锟借泛锟芥��锟斤拷锟界��锟斤拷锟斤拷娴�锝�锟斤拷
+    // 娓�锟芥俊锟介��锟�?锟姐�э拷锟芥��锟借桨��锟斤拷锟界��锟斤拷楠��帮拷��锟斤拷绋匡拷婢讹拷��锟�?
 }
 
 /* USER CODE END 0 */
@@ -167,11 +167,11 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();A_Init();
+  MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-	initRingBuffer();                            // 初始化环形缓冲区
-	HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); // 配置中断接收
+	initRingBuffer();                            // 锟斤拷婵�锟斤拷锟斤拷锟借ぐ��锟斤拷��锟斤拷
+	HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); // 锟斤拷缂�锟芥�锟斤拷锟斤拷��锟斤拷
 	int a = 100;
 	char str[100];
 	//	uint32_t nowtime = HAL_GetTick();
@@ -181,7 +181,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-		sprintf(str, "n0.val=%d", single_freq);
+		sprintf(str, "x3.val=%d", (int)(single_freq*100));
 		tjc_send_string(str);
 
 		sprintf(str, "x0.val=%d", (int)(Center_freq * 100));
@@ -191,7 +191,7 @@ int main(void)
 	    sprintf(str, "x2.val=%d", (int)(IMinA * 100));
 		tjc_send_string(str);
 
-	    sprintf(str, "n1.val=%d", t_freq);
+	    sprintf(str, "x4.val=%d", (int)(t_freq*100));
 		tjc_send_string(str);
     /* USER CODE END WHILE */
 

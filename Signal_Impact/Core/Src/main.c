@@ -14,11 +14,11 @@
 #define PWM_MAX 100
 #define SAMPLES 1000
 #define SAMPLERATE 500
-#define FRAME_LENGTH 7//æ•°æ®åŒ…å¤§å°
+#define FRAME_LENGTH 7//Êı¾İ°ü´óĞ¡
 
 
-uint8_t Sign_samplingOver = 0;//ä¿¡å·é‡‡æ ·æ˜¯å¦å®Œæˆ
-uint8_t Sign_wave_exist = 0;//æ³¢å½¢æ˜¯å¦å­˜åœ¨
+uint8_t Sign_samplingOver = 0;//ĞÅºÅ²ÉÑùÊÇ·ñÍê³É
+uint8_t Sign_wave_exist = 0;//²¨ĞÎÊÇ·ñ´æÔÚ
 uint16_t adc_cache[adc_cache_size];
 uint16_t i_trigger = 0;
 uint32_t adc_fs = 51.2e3;
@@ -31,28 +31,28 @@ uint32_t FFT_OUTPUT_MAX_index = 0;
 
 uint16_t pwm[SAMPLES] = { 0 };
 uint16_t spwm[SAMPLERATE] = { 0 };
-uint16_t S_readyDisplay = 0;//æ˜¯å¦è¿›è¡Œå¹…é¢‘ç‰¹æ€§æ˜¾ç¤º
-float Center_freq = 10.3;//ä¸­å¿ƒé¢‘ç‡
-float Bandwith = 16.5;//å¸¦å®½
-float IMinA = 78.1;//å¸¦å†…æœ€å°è¡°å‡
-int t_freq = 200 ;//ä¿¡å·é‡‡æ ·é¢‘ç‡
-int single_freq = 300;
+uint16_t S_readyDisplay = 0;//ÊÇ·ñ½øĞĞ·ùÆµÌØĞÔÏÔÊ¾
+float Center_freq = 10.3;//ÖĞĞÄÆµÂÊ
+float Bandwith = 16.5;//´ø¿í
+float IMinA = 78.1;//´øÄÚ×îĞ¡Ë¥¼õ
+float t_freq = 200.0 ;//ĞÅºÅ²ÉÑùÆµÂÊ
+float single_freq = 300.0;
 
 
 void spwm_table() {
 	for (int i = 0; i < SAMPLES; ++i) {
-		double angle = 2 * M_PI * i / SAMPLES; // è®¡ç®—å½“å‰æ ·æœ¬ç‚¹çš„è§’åº¦
-		double sine_value = cos(angle);        // è®¡ç®—æ­£å¼¦å€¼ï¼ˆèŒƒå›´ï¼š-1åˆ°1ï¼‰
+		double angle = 2 * M_PI * i / SAMPLES; // ¼ÆËãµ±Ç°Ñù±¾µãµÄ½Ç¶È
+		double sine_value = cos(angle);        // ¼ÆËãÕıÏÒÖµ£¨·¶Î§£º-1µ½1£©
 		pwm[i] = round((sine_value + 1.0) * (PWM_MAX / 2));
 	}
 }
 
 void generateWave(int freq) {
-	const int period = SAMPLERATE / freq; // è®¡ç®—ä¸€ä¸ªå‘¨æœŸçš„é‡‡æ ·ç‚¹æ•°
+	const int period = SAMPLERATE / freq; // ¼ÆËãÒ»¸öÖÜÆÚµÄ²ÉÑùµãÊı
 
 	for (int i = 0; i < SAMPLERATE; ++i) {
 		int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1)
-				/ period; // è®¡ç®—å½“å‰é‡‡æ ·ç‚¹å¯¹åº”çš„pwmç´¢å¼•
+				/ period; // ¼ÆËãµ±Ç°²ÉÑùµã¶ÔÓ¦µÄpwmË÷Òı
 		spwm[i] = pwm[pwmIndex]*4095/100;
 	}
 }
@@ -116,11 +116,11 @@ int main(void) {
 	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t*) spwm, 50000,
 	DAC_ALIGN_12B_R);
 
-	HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1); 
+//	HAL_UART_Receive_IT(&TJC_UART, RxBuffer, 1);
 
 	while (1) {
 		char str[10];
-        sprintf(str, "n0.val=%d", single_freq);
+		sprintf(str, "x3.val=%d", (int)(single_freq*100));
 		tjc_send_string(str);
 
 		sprintf(str, "x0.val=%d", (int)(Center_freq * 100));
@@ -130,7 +130,7 @@ int main(void) {
 	    sprintf(str, "x2.val=%d", (int)(IMinA * 100));
 		tjc_send_string(str);
 
-	    sprintf(str, "n1.val=%d", t_freq);
+	    sprintf(str, "x4.val=%d", (int)(t_freq*100));
 		tjc_send_string(str);
 
 
