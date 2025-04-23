@@ -1,0 +1,8 @@
+../Core/Src/main.c:30:6:spwm_table	2
+../Core/Src/main.c:38:6:generateWave	2
+../Core/Src/main.c:51:7:calculate_frequency	5
+../Core/Src/main.c:70:7:calculate_average_peak_to_peak	13
+../Core/Src/main.c:127:6:perform_adc_sampling	5
+../Core/Src/main.c:146:6:perform_fft	1
+../Core/Src/main.c:153:6:SystemClock_Config	3
+../Core/Src/main.c:192:5:main	1

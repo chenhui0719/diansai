@@ -1,0 +1,8 @@
+../Drivers/SYSTEM/sys/sys.c:33:6:sys_nvic_set_vector_table	0	static
+../Drivers/SYSTEM/sys/sys.c:44:6:sys_wfi_set	0	static,ignoring_inline_asm
+../Drivers/SYSTEM/sys/sys.c:54:6:sys_intx_disable	0	static,ignoring_inline_asm
+../Drivers/SYSTEM/sys/sys.c:64:6:sys_intx_enable	0	static,ignoring_inline_asm
+../Drivers/SYSTEM/sys/sys.c:75:6:sys_msr_msp	0	static,ignoring_inline_asm
+../Drivers/SYSTEM/sys/sys.c:85:6:sys_standby	8	static
+../Drivers/SYSTEM/sys/sys.c:96:6:sys_soft_reset	0	static,ignoring_inline_asm
+../Drivers/SYSTEM/sys/sys.c:124:9:sys_stm32_clock_init	96	static
