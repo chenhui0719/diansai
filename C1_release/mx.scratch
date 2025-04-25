@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ScratchFile FileVersion="3.0">
+  <FileVersion>3.0</FileVersion>
+  <Workspace>
+    <WorkspaceType>Single-project</WorkspaceType>
+    <WorkspacePath>C:\Users\JamesHotten\Desktop\code\C1\diansai\C1_release\</WorkspacePath>
+    <underRoot>true</underRoot>
+    <TrustZone>0</TrustZone>
+    <HAL_Driver>C:\Users\JamesHotten\STM32Cube\Repository\STM32Cube_FW_F4_V1.28.1</HAL_Driver>
+    <CMSIS>Drivers/CMSIS</CMSIS>
+    <Toolchain>STM32CubeIDE</Toolchain>
+    <IocFile>c1.ioc</IocFile>
+    <Project>
+              
+      <ProjectName>c1</ProjectName>
+           
+      <ProjectNature>C</ProjectNature>
+       
+      <Secure/>
+            
+      <filestoremove>                           </filestoremove>
+      <sourceEntriesToRemove>
+            
+        <sourceEntry/>
+      </sourceEntriesToRemove>
+          
+      <configs>
+        <config>
+              
+          <name>c1</name>
+          	 
+          <mainSourceRepo>Core</mainSourceRepo>
+             
+          <sourceStructure>Advanced</sourceStructure>
+           
+          <device>STM32F407ZGTx</device>
+          		     
+          <cpucore>Arm Cortex-M4</cpucore>
+                  
+          <fpu>SP</fpu>
+                
+          <memories>
+                       
+            <memory access="xrw" name="RAM" size="131072" start="0x20000000"/>
+                    
+            <memory access="xrw" name="CCMRAM" size="65536" start="0x10000000"/>
+                    
+            <memory access="rx" name="FLASH" size="1048576" start="0x8000000"/>
+                
+          </memories>
+              
+          <startup>C:\Users\JamesHotten\STM32Cube\Repository\STM32Cube_FW_F4_V1.28.1\Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\gcc\startup_stm32f407xx.s</startup>
+                
+          <LinkSettings>
+            	
+            <LinkAdditionalLibs>	</LinkAdditionalLibs>
+          </LinkSettings>
+              
+          <heapSize>0x200</heapSize>
+              
+          <stackSize>0x400</stackSize>
+                  
+          <cpuclock>168</cpuclock>
+                  
+          <board>custom</board>
+              
+          <debugprobe/>
+              
+          <optimization/>
+              
+          <Aincludes>        </Aincludes>
+              
+          <Adefines>        </Adefines>
+                
+          <Cdefines>
+                    
+            <define>USE_HAL_DRIVER</define>
+                    
+            <define>STM32F407xx</define>
+                    
+          </Cdefines>
+              
+          <Ldefines>        </Ldefines>
+                  
+          <Cincludes>
+            		        
+            <include>Core\Inc</include>
+                    
+            <include>Drivers\STM32F4xx_HAL_Driver\Inc</include>
+                    
+            <include>Drivers\STM32F4xx_HAL_Driver\Inc\Legacy</include>
+                    
+            <include>Drivers\CMSIS\Device\ST\STM32F4xx\Include</include>
+                    
+            <include>Drivers\CMSIS\Include</include>
+                    
+            <include>Middlewares\ST\STM32_MotionAC_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionAW_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionEC_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionFX_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionGC_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionID_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionMC_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionPM_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionPW_Library\Inc</include>
+                    
+            <include>Middlewares\ST\STM32_MotionTL_Library\Inc</include>
+                    
+            <include>Middlewares\ST\ARM\DSP\Inc</include>
+                    
+          </Cincludes>
+              
+          <definestoremove>
+                    
+            <Adefines>            </Adefines>
+                    
+            <Cdefines>
+                                  
+              <define>USE_FULL_LL_DRIVER</define>
+                                  
+              <define>USE_FULL_ASSERT=1U</define>
+                          
+            </Cdefines>
+                     
+            <Ldefines>            </Ldefines>
+                     
+          </definestoremove>
+              
+          <inctoremove>
+                    
+            <Aincludes>
+                          
+              <include/>
+                          
+            </Aincludes>
+                    
+            <Cincludes>            </Cincludes>
+                    
+          </inctoremove>
+                 
+        </config>
+                
+      </configs>
+       
+      <copyAsReference>false</copyAsReference>
+               
+      <sourceEntries>
+                    
+        <sourceEntry>
+                      
+          <name>Core</name>
+                      
+        </sourceEntry>
+                            
+        <sourceEntry>
+                      
+          <name>Drivers</name>
+                  
+        </sourceEntry>
+                           
+        <sourceEntry>
+                      
+          <name>Middlewares</name>
+                      
+        </sourceEntry>
+                            	          
+      </sourceEntries>
+      <Groups>
+        <group>
+               
+          <name>Library</name>
+          <group>
+                 
+            <name>Motion Libraries/Motion Libraries</name>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionAC_Library/Lib/MotionAC_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionAW_Library/Lib/MotionAW_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionEC_Library/Lib/MotionEC_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionFX_Library/Lib/MotionFX_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionGC_Library/Lib/MotionGC_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionID_Library/Lib/MotionID_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionMC_Library/Lib/MotionMC_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionPM_Library/Lib/MotionPM_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionPW_Library/Lib/MotionPW_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+            <file>
+                      
+              <name>Middlewares/ST/STM32_MotionTL_Library/Lib/MotionTL_CM4F_wc32_ot_hard.a</name>
+                  
+            </file>
+                
+          </group>
+          <group>
+                 
+            <name>DSP Library/DSP Library</name>
+                
+            <file>
+                      
+              <name>Middlewares/ST/ARM/DSP/Lib/libarm_cortexM4lf_math.a</name>
+                  
+            </file>
+                
+          </group>
+              
+        </group>
+            
+      </Groups>
+       
+    </Project>
+  </Workspace>
+</ScratchFile>
