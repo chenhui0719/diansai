@@ -66,25 +66,23 @@ uint16_t adc_cache[adc_cache_size];
 uint16_t i_trigger = 0;
 uint8_t Sign_wave_exist = 0;
 
-arm_cfft_radix4_instance_f32 scfft;  // FFT�ṹ??
+arm_cfft_radix4_instance_f32 scfft;	 // FFT�ṹ??
 float FFT_INPUT[adc_cache_size * 2]; // ��Ӧÿ��ʵ�������鲿����??2����
-float FFT_OUTPUT[adc_cache_size]; // FFT�����???�˴�����ÿ��float�ߵ�16λ��??���ʵ���鲿������2??
+float FFT_OUTPUT[adc_cache_size]; // FFT�����????�˴�����ÿ��float�ߵ�16λ��??���ʵ���鲿������?2??
 float FFT_OUTPUT_MAX = 0;
 uint32_t FFT_OUTPUT_MAX_index = 0;
 
 float Center_freq = 100;
 float Bandwith = 16.5;
 float IMinA = 78.1;
-float t_freq = 200.0;
-float single_freq = 300.0;
 int page = 0;
 int mode = 0;
 int waveform = 0;
-float RMS;
 float freq = 100.0;
 uint8_t Buffer[BUFFER_SIZE];
-float sinmax;
-int sinmaxpos;
+uint32_t singlefreq;
+uint8_t freqins[10];
+int top = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -92,19 +90,19 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void spwm_table() {
 	for (int i = 0; i < SAMPLES; ++i) {
-		double angle = 2 * M_PI * i / SAMPLES; // ���㵱ǰ������ĽǶ�
-		double sine_value = cos(angle);        // ��������ֵ����Χ??-1??1??
+		double angle = 2 * M_PI * i / SAMPLES; // ���㵱ǰ������ĽǶ�?
+		double sine_value = cos(angle);		   // ��������ֵ����Χ??-1??1??
 		pwm[i] = round((sine_value + 1.0) * (PWM_MAX / 2));
 	}
 }
 
-void generateWave(int freq) {
+void generateWave(uint32_t freq) {
 	const int period = SAMPLERATE / freq; // ����һ??���ڵĲ�����??
 
 	for (int i = 0; i < SAMPLERATE; ++i) {
 		int pwmIndex = (i % period) * (sizeof(pwm) / sizeof(pwm[0]) - 1)
 				/ period; // ���㵱ǰ������???Ӧ��pwm����
-		spwm[i] = pwm[pwmIndex] * 4095 / 100;
+		spwm[i] = pwm[pwmIndex] * (4095 * 2.9 / 3.3) / 100;
 	}
 }
 
@@ -127,17 +125,17 @@ float findfreq() {
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_cache, adc_cache_size);
 	}
 
-	for (i = 0; i < adc_cache_size; i++) {		//��������ת��
+	for (i = 0; i < adc_cache_size; i++) { // ��������ת��
 		FFT_INPUT[i * 2] = (float) (adc_cache[i]);
-		FFT_INPUT[i * 2 + 1] = 0;		//������㣬������ݵ��鲿
+		FFT_INPUT[i * 2 + 1] = 0; // �������?������ݵ���?
 	}
-	//FFT����
+	// FFT����
 	arm_cfft_f32(&arm_cfft_sR_f32_len1024, FFT_INPUT, 0, 1);
-	//ת��Ϊʵ����ȡģ|���� FFT ����ķ���
+	// ת��Ϊʵ����ȡģ|���� FFT ����ķ���?
 	arm_cmplx_mag_f32(FFT_INPUT, FFT_OUTPUT, adc_cache_size);
-	//�Ƿ�ȥ��ֱ����������ע���Ǿ���ȥ��
+	// �Ƿ�ȥ��ֱ����������ע���Ǿ���ȥ��
 	//		FFT_OUTPUT[0]=0;
-	//ȡ�����ֵ����һ�����ͼӳ������
+	// ȡ�����ֵ����һ�����ͼӳ������
 	arm_max_f32(FFT_OUTPUT, adc_cache_size, &FFT_OUTPUT_MAX,
 			&FFT_OUTPUT_MAX_index);
 	FFT_OUTPUT[0] = 0;
@@ -170,28 +168,92 @@ float findvpp() {
 	float wave[adc_cache_size], vmax, vmin, vpp;
 	int max_pos, min_pos;
 	for (i = 0; i < adc_cache_size; i++) {
-		wave[i] = adc_cache[i] * 3.3 / 4095; // 转换电压
+		wave[i] = adc_cache[i] * 3.3 / 4095; // �?换电�?
 	}
 	arm_max_f32(wave, 1024, &vmax, &max_pos);
 	arm_min_f32(wave, 1024, &vmin, &min_pos);
 	vpp = vmax - vmin;
 	return vpp;
 }
+float findvmax() {
+	Sign_wave_exist = 0;
+	// 等待当前????ADC-DMA传输完成
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_cache, adc_cache_size);
+	while (!Sign_samplingOver)
+		;
+	// 寻找触发??
+	i_trigger = adc_trigger_size; // 找不到便显示最新采样结??
+	uint16_t i;
+	for (i = 0; i < adc_trigger_size; i++) {
+		if (adc_cache[i] < 50 && adc_cache[i + 1] > 50) {
+			i_trigger = i;
+			Sign_wave_exist = 1;
+			break;
+		}
+	}
+	if (!Sign_wave_exist) { // 波形不存在则重新采样
+		Sign_samplingOver = 0;
+		HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_cache, adc_cache_size);
+		//    continue;
+	}
+	float wave[adc_cache_size], vmax, vmin, vpp;
+	int max_pos, min_pos;
+	for (i = 0; i < adc_cache_size; i++) {
+		wave[i] = adc_cache[i] * 3.3 / 4095; // �?换电�?
+	}
+	arm_max_f32(wave, 1024, &vmax, &max_pos);
+	arm_min_f32(wave, 1024, &vmin, &min_pos);
+	return vmax;
+}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	if (huart->Instance == USART1) {
 		if (*Buffer == 0x01)
-			page = 1; //SPWM������Ҳ�ģ��
+			page = 1; // SPWM������Ҳ�ģ��?
 		if (*Buffer == 0x02)
-			page = 2; //��Ƶ���Բ���ģ��
+			page = 2; // ��Ƶ���Բ���ģ��
 		if (*Buffer == 0x03)
-			page = 3; //������ʾģ��
+			page = 3; // ������ʾģ��
 		if (*Buffer == 0x06)
-			page = 0; //���г���ȫ��ֹͣ
-		if (*Buffer == 0x04)
-			mode = 1; //��Ƶ����
+			page = 0; // ���г���ȫ��ֹͣ
 		if (*Buffer == 0x05)
-			mode = 2; //ɨƵ����
+			mode = 2; // ɨƵ����
+		if (*Buffer == 0x04) {
+			mode = 1; // 信号发生模式
+			top = 0;
+		}
+		if (*Buffer == 0x11)
+			freqins[top++] = 1;
+		if (*Buffer == 0x12)
+			freqins[top++] = 2;
+		if (*Buffer == 0x13)
+			freqins[top++] = 3;
+		if (*Buffer == 0x14)
+			freqins[top++] = 4;
+		if (*Buffer == 0x15)
+			freqins[top++] = 5;
+		if (*Buffer == 0x16)
+			freqins[top++] = 6;
+		if (*Buffer == 0x17)
+			freqins[top++] = 7;
+		if (*Buffer == 0x18)
+			freqins[top++] = 8;
+		if (*Buffer == 0x19)
+			freqins[top++] = 9;
+		if (*Buffer == 0x10)
+			freqins[top++] = 0;
+		if (*Buffer == 0x99) {
+			uint8_t i;
+			for (i = 0; i < top; i++) {
+				singlefreq = singlefreq * 10 + freqins[i];
+			}
+		}
+		if (*Buffer == 0x98) {
+			top--;
+			if (top < 0)
+				top = 0;
+		}
 	}
+
 	HAL_UART_Receive_IT(&huart1, (uint8_t*) Buffer, 1);
 }
 /* USER CODE END PFP */
@@ -251,32 +313,38 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	uint8_t disflag = 0;
+	singlefreq = 0;
 	while (1) {
 		char str[20];
-		freq = findfreq();
-		float vpeakpeak = findvpp();
+//		freq = findfreq();
+//		float vpeakpeak = findvpp();
 		if (page == 1) {
 			switch (mode) {
 			case 1:
-				generateWave(500);
+				if (singlefreq == 0) {
+					mode = 0;
+					break;
+				}
+				generateWave(singlefreq / 10);
 				HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t*) spwm,
 				SAMPLERATE,
 				DAC_ALIGN_12B_R);
+				singlefreq = 0;
+				mode = 0;
 				break;
 			case 2:
 				uint16_t i;
-				for (i = 10; i <= 1000; i += 10) {
+				for (i = 1; i <= 100; i++) {
 					generateWave(i);
 					HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t*) spwm,
 					SAMPLERATE,
 					DAC_ALIGN_12B_R);
 					HAL_Delay(50);
 				}
+				mode = 0;
 				break;
 			}
-			//SPWM�������
-			if (page == 0)
-				break;
+			// SPWM�������?
 		}
 		if (page == 2) {
 			float Au[100];
@@ -286,92 +354,93 @@ int main(void) {
 				HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t*) spwm,
 				SAMPLERATE,
 				DAC_ALIGN_12B_R);
-				Au[i] = findvpp() / 2;
+				float vmaxget = findvmax();
+				Au[i] = findvmax() / (3 / 2.0);
 			}
+			float freqget = findfreq();
 			float maxabs = 0;
 			uint8_t st, ed;
 			for (i = 0; i < 100; i++) {
-				if (Au[i] <= sqrt(2) && Au[i + 1] > sqrt(2))
+				if (Au[i] <= 0.707 && Au[i + 1] > 0.707)
 					st = i;
-				if (Au[i] > sqrt(2) && Au[i + 1] <= sqrt(2))
+				if (Au[i] > 0.707 && Au[i + 1] <= 0.707)
 					ed = i;
-				if (abs(Au[i]) > maxabs)
-					maxabs = abs(Au[i]);
+				if (Au[i] > maxabs)
+					maxabs = Au[i];
 			}
 			Bandwith = (ed - st) * 10;
 			IMinA = maxabs;
-			//��Ƶ��������
+			// ��Ƶ��������
 			sprintf(str, "x0.val=%d", (int) (Center_freq * 100));
 			tjc_send_string(str);
 			sprintf(str, "x1.val=%d", (int) (Bandwith * 100));
 			tjc_send_string(str);
 			sprintf(str, "x2.val=%d", (int) (IMinA * 100));
 			tjc_send_string(str);
-			if (page == 0)
-				break;
 		}
 		if (page == 3) {
 			freq = findfreq();
-//			peak_to_peak = FFT_OUTPUT_MAX * 3.3 / 4096;
+			//			peak_to_peak = FFT_OUTPUT_MAX * 3.3 / 4096;
 			float vpp, vmax, vmin;
 			uint16_t max_pos, min_pos;
-			arm_max_f32(adc_cache, 1024, &vmax, &max_pos); //DSP库自带的求最值函数
+			arm_max_f32(adc_cache, 1024, &vmax, &max_pos); // DSP库自带的求最值函�?
 			arm_min_f32(adc_cache, 1024, &vmin, &min_pos);
 			vpp = findvpp();
-
 			sprintf(str, "x3.val=%d", (int) (vpp * 100));
 			tjc_send_string(str);
 			sprintf(str, "x4.val=%d", (int) (freq * 100));
 			tjc_send_string(str);
 			uint16_t i;
-			for (i = 0; i < adc_cache_size; i++) {
-				FFT_INPUT[i * 2] = adc_cache[i];
-				FFT_INPUT[i * 2 + 1] = 0;
+			for (i = 0; i < adc_cache_size; i++) { // ��������ת��
+				FFT_INPUT[i * 2] = (float) (adc_cache[i]);
+				FFT_INPUT[i * 2 + 1] = 0; // �������?������ݵ���?
 			}
-
+			// FFT����
 			arm_cfft_f32(&arm_cfft_sR_f32_len1024, FFT_INPUT, 0, 1);
+			// ת��Ϊʵ����ȡģ|���� FFT ����ķ���?
 			arm_cmplx_mag_f32(FFT_INPUT, FFT_OUTPUT, adc_cache_size);
-			FFT_OUTPUT[0] /= 1024;
+			// �Ƿ�ȥ��ֱ����������ע���Ǿ���ȥ��
+			//		FFT_OUTPUT[0]=0;
+			// ȡ�����ֵ����һ�����ͼӳ������
+			arm_max_f32(FFT_OUTPUT, adc_cache_size, &FFT_OUTPUT_MAX,
+					&FFT_OUTPUT_MAX_index);
+			FFT_OUTPUT[0] = 0;
+			arm_max_f32(FFT_OUTPUT, adc_cache_size / 2, &FFT_OUTPUT_MAX,
+					&FFT_OUTPUT_MAX_index);
 
-			for (i = 1; i < adc_cache_size; i++) {
-				FFT_OUTPUT[i] /= 512;
-			}
-			float Amax;
-			uint32_t Amax_pos;
-			FFT_OUTPUT[0] = 0; //直流分量置0，以防影响求最大值。
-			arm_max_f32(FFT_OUTPUT, 1024, &Amax, &Amax_pos);  //求出基波在频谱中的位置
-			float k = FFT_OUTPUT[Amax_pos] / FFT_OUTPUT[3 * Amax_pos];
+			float k = FFT_OUTPUT[FFT_OUTPUT_MAX_index]
+					/ FFT_OUTPUT[3 * FFT_OUTPUT_MAX_index];
 
-			if (k < 4 && k > 2)         //方波的 基波幅度 是三次谐波幅度的 三倍。 实际测量在2~4之间浮动
-				waveform = 2; //方波
+			if (k < 6 && k > 1) // 方波�? 基波幅度 �?三�?�谐波幅度的 三倍�? 实际测量�?2~4之间�?�?
+				waveform = 2;	// 方波
 
-			if (k < 12 && k > 6)       //三角波的基波幅度是三次谐波幅度的 九倍。  实际测量在 6 ~ 12 间浮动
-				waveform = 3; //三角波
+			if (k < 20 && k > 6) // 三�?�波的基波幅度是三�?�谐波幅度的 九倍�?  实际测量�? 6 ~ 12 间浮�?
+				waveform = 3;	 // 三�?�波
 
-			if (k > 13)
-				waveform = 1; //正弦波    //正弦波理论上三次谐波幅度是0，k值会非常大。
+			if (k > 20)
+				waveform = 1; // 正弦�?    //正弦波理论上三�?�谐波幅度是0，k值会非常大�?
 
-//			int Npoints = adc_fs / freq;
-//			uint16_t i;
-//			for (i = 0; i < Npoints; i++)
-//				adc_cache[i] = adc_cache[i] - vmin - vpp / 2; //将波形平移到与时间轴对称的位置
-//			arm_rms_f32(adc_cache, Npoints, &RMS); // DSP库封装好的求rms值函数 不再手动实现 原型： arm_rms_f32 (const float32_t *pSrc, uint32_t blockSize, float32_t *pResult)
-//			RMS = RMS / (vpp / 2);
+			//			int Npoints = adc_fs / freq;
+			//			uint16_t i;
+			//			for (i = 0; i < Npoints; i++)
+			//				adc_cache[i] = adc_cache[i] - vmin - vpp / 2; //将波形平移到与时间轴对称的位�?
+			//			arm_rms_f32(adc_cache, Npoints, &RMS); // DSP库封装好的求rms值函�? 不再手动实现 原型�? arm_rms_f32 (const float32_t *pSrc, uint32_t blockSize, float32_t *pResult)
+			//			RMS = RMS / (vpp / 2);
 
-//			判断波类型
-//			if (RMS > 0.64 && RMS < 0.8)
-//				waveform = 1; //正弦波
-//			if (RMS > 0.8)
-//				waveform = 2; //方波
-//			if (RMS < 0.63)
-//				waveform = 3; //三角波
+			//			判断波类�?
+			//			if (RMS > 0.64 && RMS < 0.8)
+			//				waveform = 1; //正弦�?
+			//			if (RMS > 0.8)
+			//				waveform = 2; //方波
+			//			if (RMS < 0.63)
+			//				waveform = 3; //三�?�波
 
-//生成稳定波形
+			// 生成稳定波形
 			if (waveform == 1) {
 				uint16_t i;
 				if (disflag == 0) {
 					for (i = 0; i < 420; i++) {
-						//向曲线s0的通道0传输1个数据,add指令不支持跨页面
+						// 向曲线s0的通道0传输1�?数据,add指令不支持跨页面
 						uint16_t sinval = sin_table[i];
 						sprintf(str, "add s0.id,0,%d\xff\xff\xff",
 								(int) sinval);
@@ -379,14 +448,13 @@ int main(void) {
 					}
 					disflag = 1;
 				}
-
 			}
 
 			if (waveform == 2) {
 				uint16_t i;
 				if (disflag == 0) {
 					for (i = 0; i < 420; i++) {
-						//向曲线s0的通道0传输1个数据,add指令不支持跨页面
+						// 向曲线s0的通道0传输1�?数据,add指令不支持跨页面
 						uint16_t squareval = square_table[i];
 						sprintf(str, "add s0.id,0,%d\xff\xff\xff",
 								(int) squareval);
@@ -394,14 +462,13 @@ int main(void) {
 					}
 					disflag = 1;
 				}
-
 			}
 
 			if (waveform == 3) {
 				uint16_t i;
 				if (disflag == 0) {
 					for (i = 0; i < 420; i++) {
-						//向曲线s0的通道0传输1个数据,add指令不支持跨页面
+						// 向曲线s0的通道0传输1�?数据,add指令不支持跨页面
 						uint16_t triangleval = triangle_table[i];
 						sprintf(str, "add s0.id,0,%d\xff\xff\xff",
 								(int) triangleval);
@@ -409,12 +476,10 @@ int main(void) {
 					}
 					disflag = 1;
 				}
-
 			}
 
 			if (page == 0) {
 				disflag = 0;
-				break;
 			}
 		}
 		/* USER CODE END WHILE */
@@ -493,9 +558,9 @@ void Error_Handler(void) {
  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
+	/* USER CODE BEGIN 6 */
+	/* User can add his own implementation to report the file name and line number,
+	   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	/* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
