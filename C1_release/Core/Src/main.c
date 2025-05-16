@@ -316,6 +316,8 @@ int main(void) {
 	singlefreq = 0;
 	while (1) {
 		char str[20];
+		sprintf(str, "n0.val=%d", 700);
+		tjc_send_string(str);
 //		freq = findfreq();
 //		float vpeakpeak = findvpp();
 		if (page == 1) {
